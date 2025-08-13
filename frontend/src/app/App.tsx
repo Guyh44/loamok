@@ -1,23 +1,23 @@
-import React from "react";
-import "../App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Header from "../components/Header";
 import Home from "../features/home/Home";
+import Page from "./Page.tsx";
+import "../App.css";
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Header />
+    <>
+      <Header /> {/* Show header on all pages */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/page1" element={<div>Page 1 (Coming Soon)</div>} />
-        <Route path="/page2" element={<div>Page 2 (Coming Soon)</div>} />
-        <Route path="/page3" element={<div>Page 3 (Coming Soon)</div>} />
-        <Route path="/page4" element={<div>Page 4 (Coming Soon)</div>} />
-        <Route path="/page5" element={<div>Page 5 (Coming Soon)</div>} />
-        <Route path="/page6" element={<div>Page 6 (Coming Soon)</div>} />
+        <Route path="/page1" element={<Page title="Page 1" />} />
+        <Route path="/page2" element={<Page title="Page 2" />} />
+        <Route path="/page3" element={<Page title="Page 3" />} />
+        <Route path="/page4" element={<Page title="Page 4" />} />
+        <Route path="/page5" element={<Page title="Page 5" />} />
+        <Route path="/page6" element={<Page title="Page 6" />} />
       </Routes>
-    </Router>
+    </>
   );
 };
 

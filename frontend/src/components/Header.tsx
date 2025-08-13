@@ -1,9 +1,9 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import "./Header.css"; // contains your header CSS
 
 const Header: React.FC = () => {
   return (
-    <header style={{ padding: "20px", background: "#282c34", color: "white" }}>
+    <header>
       <h1>My React App</h1>
     </header>
   );
