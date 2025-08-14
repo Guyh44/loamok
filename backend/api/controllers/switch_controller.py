@@ -1,29 +1,43 @@
-from infrastructure.services.password_service import PasswordService
-from infrastructure.services.ssh_service import SSHService
-from domain.entities.switch import Switch
-from application.use_cases.change_vlan import ChangeVlanUseCase
-from application.use_cases.show_logs import GetLogsUseCase
-from application.use_cases.show_int_status import GetIntStatusCase
+# from flask import Blueprint, request, jsonify
+# from flask_restx import Api, Resource
 
-KEY_PATH = r"C:\Users\Hamburg\Desktop\de.txt"
+# from infrastructure.services.password_service import PasswordService
+# from infrastructure.services.ssh_service import SSHService
+# from domain.entities.switch import Switch
+# from application.use_cases.change_vlan import ChangeVlanUseCase
+# from application.use_cases.show_logs import GetLogsUseCase
+# from application.use_cases.show_int_status import GetIntStatusCase
 
-pwd = PasswordService(KEY_PATH).decrypt_password()
+# switch_bp = Blueprint("switch", __name__)
 
-ip = input("enter switch IP: ")
-sw = Switch(ip, username="root")
+# KEY_PATH = r"C:\Users\Hamburg\Desktop\de.txt"
+# pwd = PasswordService(KEY_PATH).decrypt_password()
 
-ssh = SSHService(password=pwd)
+# def get_ssh_and_switch(ip):
+#     sw = Switch(ip, username="root")
+#     ssh = SSHService(password=pwd)
+#     return ssh, sw
 
+# @switch_bp.route("/logs", methods=["GET"])
+# def get_logs():
+#     ip = request.args.get("ip")
+#     ssh, sw = get_ssh_and_switch(ip)
+#     logs = GetLogsUseCase(ssh, sw).execute(num_lines=10)
+#     return jsonify({"logs": logs})
 
-show_logs = GetLogsUseCase(ssh, sw)
-print(f"\n ----------- showing last up/down ports ----------- \n + {show_logs.execute(num_lines=10)}")
+# @switch_bp.route("/int-status", methods=["GET"])
+# def get_int_status():
+#     ip = request.args.get("ip")
+#     ssh, sw = get_ssh_and_switch(ip)
+#     status = GetIntStatusCase(ssh, sw).execute()
+#     return jsonify({"status": status})
 
-show_int_status = GetIntStatusCase(ssh, sw)
-print(f"\n ----------- showing int status ----------- \n + {show_int_status.execute()}")
-
-port = input("enter a switch port (e.g - gi1/0/1): ")
-vlan = input("enter a vlan ID: ")
-change_vlan = ChangeVlanUseCase(ssh, sw)
-print(change_vlan.execute(port, vlan))
-
-
+# @switch_bp.route("/change-vlan", methods=["POST"])
+# def change_vlan():
+#     data = request.json
+#     ip = data.get("ip")
+#     port = data.get("port")
+#     vlan = data.get("vlan")
+#     ssh, sw = get_ssh_and_switch(ip)
+#     result = ChangeVlanUseCase(ssh, sw).execute(port, vlan)
+#     return jsonify({"result": result})
