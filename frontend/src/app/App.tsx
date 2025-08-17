@@ -11,12 +11,12 @@ const App: React.FC = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/page1" element={<PortConfig/>} />
-        <Route path="/page2" element={<GenericPage/>} />
-        <Route path="/page3" element={<GenericPage/>} />
-        <Route path="/page4" element={<GenericPage/>} />
-        <Route path="/page5" element={<GenericPage/>} />
-        <Route path="/page6" element={<GenericPage/>} />
+        <Route path="/add-admin" element={<GenericPage/>} />
+        <Route path="/manage-users" element={<GenericPage/>} />
+        <Route path="/change-vlan" element={<PortConfig/>} />
+        <Route path="/manage-vms" element={<GenericPage/>} />
+        <Route path="/groups" element={<GenericPage/>} />
+        <Route path="/create-user" element={<GenericPage/>} />
       </Routes>
     </>
   );

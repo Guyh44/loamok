@@ -17,7 +17,7 @@ body {
   flex-direction: column;
   justify-content: center; /* vertical centering */
   align-items: center;     /* horizontal centering */
-  min-height: 100vh;       /* take full viewport height */
+  min-height: 80vh;       /* take full viewport height */
 }
 
 

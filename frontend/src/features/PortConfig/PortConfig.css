@@ -1,0 +1,38 @@
+#port-config-container {
+  background: #f9f9f9;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
+  direction: rtl;
+  text-align: right;
+}
+
+.config-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.config-row label {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.config-row select {
+  flex: 1;
+  margin-left: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-right: 20px;
+  text-align: center;
+}
+
+.css-yk16xz-control {
+  font-size: 1rem;
+  min-height: 40px;
+}
