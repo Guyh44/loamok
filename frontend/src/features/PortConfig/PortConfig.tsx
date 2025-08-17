@@ -1,6 +1,6 @@
 import GenericPage from "../../app/GenericPage";
 
-const Page1: React.FC = () => {
+const PortConfig: React.FC = () => {
   return (
     <GenericPage title="Page 1">
       <p>This is the content of Page 1.</p>
@@ -8,4 +8,4 @@ const Page1: React.FC = () => {
   );
 };
 
-export default Page1;
+export default PortConfig;

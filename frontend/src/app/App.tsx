@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Header from "../components/Header";
 import Home from "../features/home/Home";
 import GenericPage from "./GenericPage.tsx";
+import PortConfig from "../features/PortConfig/PortConfig.tsx";
 import "../App.css";
 
 const App: React.FC = () => {
@@ -10,7 +11,7 @@ const App: React.FC = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/page1" element={<GenericPage/>} />
+        <Route path="/page1" element={<PortConfig/>} />
         <Route path="/page2" element={<GenericPage/>} />
         <Route path="/page3" element={<GenericPage/>} />
         <Route path="/page4" element={<GenericPage/>} />
