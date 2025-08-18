@@ -1,17 +1,77 @@
 import "./PortConfig.css";
 import GenericPage from "../../app/GenericPage";
-import { useState } from "react";
-import { vlanOptions } from "../../data/vlanOptions";
-import type { vlanDropDownOptions } from "../../data/vlanOptions";
+import { useState, useEffect } from "react";
 import { switchOptions } from "../../data/switchs";
 import type { IPDropdownOption } from "../../data/switchs";
+import { getPorts } from "./getPorts";
+import { getVlans } from "./getVlan";
+import type { VlanDropdownOption } from "./getVlan"; 
 
 const PortConfig: React.FC = () => {
-  const [selectedVlan, setSelectedVlan] = useState<string>("");
   const [selectedSwitch, setSelectedSwitch] = useState<string>("");
   const [selectedPort, setSelectedPort] = useState<string>("");
+  const [selectedVlan, setSelectedVlan] = useState<string>("");
+  const [ports, setPorts] = useState<{ value: string; label: string }[]>([]);
+  const [vlanOptions, setVlanOptions] = useState<VlanDropdownOption[]>([]);
 
-  const ports = ["1", "2", "3", "4", "5", "6", "7", "8"]; // available ports
+  const handleSubmit = async () => {
+    try {
+      const payload = {
+        switch: selectedSwitch,
+        port: selectedPort,
+        vlan: selectedVlan,
+      };
+
+      console.log("Sending:", payload);
+
+     await fetch("http://localhost:5000/switch/change-vlan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          switch: selectedSwitch,
+          port: selectedPort,
+          vlan: selectedVlan,
+        }),
+      });
+
+
+
+      //Reset port and vlan after submit
+      setSelectedPort("");
+      setSelectedVlan("");
+    } catch (err: any) {
+      console.error("VLAN change failed:", err);
+      alert(`Failed to send configuration: ${err.message}`);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!selectedSwitch) {
+        setPorts([]);
+        setVlanOptions([]);
+        return;
+      }
+
+      try {
+        // Fetch ports and map to { value, label } objects
+        const portsList = await getPorts(selectedSwitch);
+        setPorts(portsList.map((p) => ({ value: p, label: p })));
+
+        // Fetch VLANs and map to { value, label } objects for the select box
+        const vlanList = await getVlans(selectedSwitch);
+        setVlanOptions(vlanList.map((v) => ({ value: v, label: `VLAN ${v}` })));
+
+      } catch (err) {
+        console.error("Failed to fetch ports or VLANs:", err);
+        setPorts([]);
+        setVlanOptions([]);
+      }
+    };
+
+    fetchData();
+  }, [selectedSwitch]);
+
 
   return (
     <GenericPage title="Change VLAN">
@@ -40,9 +100,9 @@ const PortConfig: React.FC = () => {
             onChange={(e) => setSelectedPort(e.target.value)}
           >
             <option value="">-- בחר פורט --</option>
-            {ports.map((port) => (
-              <option key={port} value={port}>
-                {port}
+            {ports.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
               </option>
             ))}
           </select>
@@ -56,13 +116,14 @@ const PortConfig: React.FC = () => {
             onChange={(e) => setSelectedVlan(e.target.value)}
           >
             <option value="">-- בחר VLAN --</option>
-            {vlanOptions.map((option: vlanDropDownOptions) => (
+            {vlanOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
           </select>
         </div>
+        <button onClick={handleSubmit}> שלח </button>
       </div>
     </GenericPage>
   );
