@@ -1,16 +1,5 @@
-# from flask import Flask
-# from api.controllers.switch_controller import switch_bp
-
-# app = Flask(__name__)
-# app.register_blueprint(switch_bp, url_prefix="/switch")
-
-# if __name__ == "__main__":
-#     app.run(debug=True)
-
-
-
-
-from flask import Flask, request
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from flask_restx import Api, Resource, fields
 from infrastructure.services.password_service import PasswordService
 from infrastructure.services.ssh_service import SSHService
@@ -18,9 +7,11 @@ from domain.entities.switch import Switch
 from application.use_cases.change_vlan import ChangeVlanUseCase
 from application.use_cases.show_logs import GetLogsUseCase
 from application.use_cases.show_int_status import GetIntStatusCase
+from application.use_cases.show_vlans import GetVlansCase
 
 # --- Initialize Flask and Swagger ---
 app = Flask(__name__)
+CORS(app)
 api = Api(app, version="1.0", title="ze lo caze amok API", description="Switch Management API with Clean Architecture")
 
 # --- Define input models for Swagger ---
@@ -61,21 +52,61 @@ class IntStatus(Resource):
         ssh = SSHService(password=password)
         int_status = GetIntStatusCase(ssh, sw)
         return {"interfaces": int_status.execute()}
+    
+@switch_ns.route("/int-status/ports")
+class IntStatusPorts(Resource):
+    @switch_ns.expect(ip_model)
+    def post(self):
+        data = request.get_json()
+        sw = Switch(ip=data["ip"], username="root")
+        ssh = SSHService(password=password)
+        int_status = GetIntStatusCase(ssh, sw)
+        return {"ports": int_status.get_ports()}
+
+
+@switch_ns.route("/switch-vlans")
+class SwitchVlans(Resource):
+    @switch_ns.expect(ip_model)
+    def post(self):
+        data = request.get_json()
+        sw = Switch(ip=data["ip"], username="root")
+        ssh = SSHService(password=password)
+        switch_vlans = GetVlansCase(ssh, sw)
+        return {"vlans": switch_vlans.get_vlans()}
 
 @switch_ns.route("/change-vlan")
 class ChangeVlan(Resource):
     @switch_ns.expect(vlan_model)
     def post(self):
         data = request.get_json()
-        sw = Switch(ip=data["ip"], username="root")
+        print("Received data:", data, flush=True)
+        switch_ip = data.get("switch")
+        port = data.get("port")
+        vlan = data.get("vlan")
+        if not switch_ip or not port or not vlan:
+            return {"error": "Missing switch, port, or vlan"}, 400        
+        
+        sw = Switch(ip=switch_ip, username="root")
         ssh = SSHService(password=password)
         change_vlan = ChangeVlanUseCase(ssh, sw)
+
         try:
-            result = change_vlan.execute(port=data["port"], vlan=data["vlan"])
-            return {"result": result}
+            result = change_vlan.execute(port=port, vlan=vlan)
+            return {"result": result}, 200
         except ValueError as e:
             return {"error": str(e)}, 400
+        except Exception as e:
+            return {"error": f"Unexpected error: {str(e)}"}, 500
 
+@app.route("/api/pages/<page_id>", methods=["GET"])
+def get_page(page_id):
+    # Temporary static page data
+    page_data = {
+        "id": page_id,
+        "title": f"{page_id.capitalize()} Page",
+        "content": f"This is the content for page '{page_id}'."
+    }
+    return jsonify(page_data)
 
 # --- Run app ---
 if __name__ == "__main__":
