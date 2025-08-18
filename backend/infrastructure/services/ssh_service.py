@@ -25,6 +25,3 @@ class SSHService:
         except Exception as e:
             print("error")
             return f"Error: {e}"
-
-
-
