@@ -1,19 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import GridBlock from "../../components/GridBlock";
-import logo1 from "../../assets/logo1.svg";
-import logo2 from "../../assets/logo2.svg";
+import rj_icon from "../../assets/rj.svg";
+import users_icon from "../../assets/users.svg";
 import logo3 from "../../assets/logo3.svg";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
 
   const blocks = [
-    { title: "הוספת אדמין לעמדה", logo: logo1, link: "/add-admin" },
-    { title: "ניהול משתמשים", logo: logo2, link: "/manage-users" },
-    { title: "קנפוג פורטים", logo: logo3, link: "/change-vlan" },
-    { title: "ניהול מכונות", logo: logo1, link: "/manage-vms" },
-    { title: "AD הוספה לקבוצת", logo: logo2, link: "/groups" },
+    { title: "הוספת אדמין לעמדה", logo: logo3, link: "/add-admin" },
+    { title: "ניהול משתמשים", logo: users_icon, link: "/manage-users" },
+    { title: "קנפוג פורטים", logo: rj_icon, link: "/change-vlan" },
+    { title: "ניהול מכונות", logo: logo3, link: "/manage-vms" },
+    { title: "AD הוספה לקבוצת", logo: logo3, link: "/groups" },
     { title: "יצירת משתמש", logo: logo3, link: "/create-user" },
   ];
 
