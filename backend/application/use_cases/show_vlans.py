@@ -16,7 +16,13 @@ class GetVlansCase:
                 "show vlan brief"
             ]
         )
-
+        if "% Invalid input" in output or "^" in output:
+            commands = ["terminal length 0", "show run | inc bridge-domain"]
+            output = self.ssh.run_commands(
+                ip=self.switch.ip,
+                username=self.switch.username,
+                commands=commands
+            )
         print(output)
         vlans = self._parse_vlans(output)
         print(vlans)
@@ -24,18 +30,28 @@ class GetVlansCase:
 
     def _parse_vlans(self, output):
         vlan_list = []
+
         for line in output.splitlines():
             line = line.strip()
-            if not line or line.lower().startswith(("vlan", "name", "----")):
+            if not line:
                 continue
 
-            parts = line.split()
-            first = parts[0]
+            # Case 1: "show vlan brief" output
+            if line[0].isdigit() or line.startswith("*"):
+                parts = line.split()
+                vlan_id = parts[0].lstrip("*")
+                if vlan_id.isdigit():
+                    vlan_list.append(vlan_id)
 
-            # Handle VLAN lines like "200", "*200", "404"
-            vlan_id = first.lstrip("*")
-            if vlan_id.isdigit():
-                vlan_list.append(vlan_id)
+            # Case 2: "bridge-domain <id>"
+            elif line.lower().startswith("bridge-domain"):
+                parts = line.split()
+                if len(parts) >= 2 and parts[1].isdigit():
+                    vlan_list.append(parts[1])
 
-        return vlan_list
+        # make unique while preserving order
+        unique_vlans = list(dict.fromkeys(vlan_list))
+
+        return unique_vlans
+
 
