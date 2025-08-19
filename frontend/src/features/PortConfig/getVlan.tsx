@@ -12,6 +12,6 @@ interface VlansResponse {
 }
 
 export const getVlans = async (ip: string): Promise<string[]> => {
-  const response = await axios.post<VlansResponse>(`${API_BASE}/switch/switch-vlans`, { ip });
+  const response = await axios.post<VlansResponse>(`${API_BASE}/switch/get-switch-vlans`, { ip });
   return response.data.vlans; 
 };

@@ -14,6 +14,36 @@ const PortConfig: React.FC = () => {
   const [ports, setPorts] = useState<{ value: string; label: string }[]>([]);
   const [vlanOptions, setVlanOptions] = useState<VlanDropdownOption[]>([]);
 
+  const sendCommand = async (action: "shut" | "no-shut") => {
+    try {
+      const payload = {
+        ip: selectedSwitch,   
+        port: selectedPort,
+      };
+
+      console.log(`Sending ${action}:`, payload);
+
+      const res = await fetch(`http://localhost:5000/switch/${action}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Request failed: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log(`${action} response:`, data);
+
+      alert(`Success: ${action} on ${selectedPort}`);
+
+    } catch (err: any) {
+      console.error(`${action} failed:`, err);
+      alert(`Failed to ${action} port: ${err.message}`);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       const payload = {
@@ -123,6 +153,12 @@ const PortConfig: React.FC = () => {
             ))}
           </select>
         </div>
+        {selectedPort && (
+          <div className="extra-buttons">
+            <button onClick={() => sendCommand("shut")} disabled={!selectedSwitch || !selectedPort}>shut</button>
+            <button onClick={() => sendCommand("no-shut")} disabled={!selectedSwitch || !selectedPort}>no shut</button>
+          </div>
+        )}
         <button onClick={handleSubmit}> שלח </button>
       </div>
     </GenericPage>
