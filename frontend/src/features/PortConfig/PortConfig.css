@@ -14,6 +14,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  position: relative; /* for spinner positioning */
 }
 
 .config-row label {
@@ -48,13 +49,11 @@
   border-radius: 20px;
 }
 
-
 #port-config-container button:hover {
   background: linear-gradient(135deg, #3a3a3a, #507acc);
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
-
 
 #port-config-container button:active {
   background: linear-gradient(135deg, #1f1f1f, #2e4d99);
@@ -66,6 +65,7 @@
   display: flex;
   gap: 10px; 
   margin-bottom: 10px;
+  position: relative; /* for spinner positioning */
 }
 
 #port-config-container .extra-buttons button {
@@ -78,6 +78,7 @@
   border-radius: 20px;
   border: none;
   transition: all 0.2s ease;
+  height: 45px;
 }
 
 #port-config-container .extra-buttons button:hover {
@@ -90,4 +91,31 @@
   background: linear-gradient(135deg, #1f1f1f, #2e4d99);
   transform: translateY(1px);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.actions-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Spinner positioning classes */
+.spinner-inline {
+  position: absolute;
+  left: -30px; /* position to the left side of the select box */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.spinner-button-left {
+  position: absolute;
+  left: -35px; /* position to the left side of the buttons */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.send-button-wrapper {
+  position: relative; /* for spinner positioning */
 }

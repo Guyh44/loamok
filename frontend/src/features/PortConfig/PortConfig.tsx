@@ -6,6 +6,7 @@ import type { IPDropdownOption } from "../../data/switchs";
 import { getPorts } from "./getPorts";
 import { getVlans } from "./getVlan";
 import type { VlanDropdownOption } from "./getVlan"; 
+import Spinner from "../../components/spinner";
 
 const PortConfig: React.FC = () => {
   const [selectedSwitch, setSelectedSwitch] = useState<string>("");
@@ -13,8 +14,15 @@ const PortConfig: React.FC = () => {
   const [selectedVlan, setSelectedVlan] = useState<string>("");
   const [ports, setPorts] = useState<{ value: string; label: string }[]>([]);
   const [vlanOptions, setVlanOptions] = useState<VlanDropdownOption[]>([]);
+  
+  // Separate loading states for different operations
+  const [loadingPorts, setLoadingPorts] = useState<boolean>(false);
+  const [loadingVlans, setLoadingVlans] = useState<boolean>(false);
+  const [loadingShutCommand, setLoadingShutCommand] = useState<boolean>(false);
+  const [loadingSendCommand, setLoadingSendCommand] = useState<boolean>(false);
 
   const sendCommand = async (action: "shut" | "no-shut") => {
+    setLoadingShutCommand(true);
     try {
       const payload = {
         ip: selectedSwitch,   
@@ -41,10 +49,13 @@ const PortConfig: React.FC = () => {
     } catch (err: any) {
       console.error(`${action} failed:`, err);
       alert(`Failed to ${action} port: ${err.message}`);
+    } finally {
+      setLoadingShutCommand(false); 
     }
   };
 
   const handleSubmit = async () => {
+    setLoadingSendCommand(true);
     try {
       const payload = {
         switch: selectedSwitch,
@@ -64,14 +75,14 @@ const PortConfig: React.FC = () => {
         }),
       });
 
-
-
       //Reset port and vlan after submit
       setSelectedPort("");
       setSelectedVlan("");
     } catch (err: any) {
       console.error("VLAN change failed:", err);
       alert(`Failed to send configuration: ${err.message}`);
+    } finally {
+      setLoadingSendCommand(false); 
     }
   };
 
@@ -82,29 +93,35 @@ const PortConfig: React.FC = () => {
         setVlanOptions([]);
         return;
       }
-
+      
+      setLoadingPorts(true);
+      setLoadingVlans(true);
+      
       try {
         // Fetch ports and map to { value, label } objects
         const portsList = await getPorts(selectedSwitch);
         setPorts(portsList.map((p) => ({ value: p, label: p })));
+        setLoadingPorts(false);
 
         // Fetch VLANs and map to { value, label } objects for the select box
         const vlanList = await getVlans(selectedSwitch);
         setVlanOptions(vlanList.map((v) => ({ value: v, label: `VLAN ${v}` })));
+        setLoadingVlans(false);
 
       } catch (err) {
         console.error("Failed to fetch ports or VLANs:", err);
         setPorts([]);
         setVlanOptions([]);
+        setLoadingPorts(false);
+        setLoadingVlans(false);
       }
     };
 
     fetchData();
   }, [selectedSwitch]);
 
-
   return (
-    <GenericPage title="Change VLAN">
+    <GenericPage>
       <div id="port-config-container">
         {/* Switch selection */}
         <div className="config-row">
@@ -136,6 +153,11 @@ const PortConfig: React.FC = () => {
               </option>
             ))}
           </select>
+          {loadingPorts && (
+            <div className="spinner-inline">
+              <Spinner isLoading={true} size={25} />
+            </div>
+          )}
         </div>
 
         {/* VLAN selection */}
@@ -152,14 +174,35 @@ const PortConfig: React.FC = () => {
               </option>
             ))}
           </select>
+          {loadingVlans && (
+            <div className="spinner-inline">
+              <Spinner isLoading={true} size={25} />
+            </div>
+          )}
         </div>
-        {selectedPort && (
-          <div className="extra-buttons">
-            <button onClick={() => sendCommand("shut")} disabled={!selectedSwitch || !selectedPort}>shut</button>
-            <button onClick={() => sendCommand("no-shut")} disabled={!selectedSwitch || !selectedPort}>no shut</button>
+        
+        <div className="actions-wrapper">
+          {selectedPort && (
+            <div className="extra-buttons">
+              <button onClick={() => sendCommand("shut")} disabled={!selectedSwitch || !selectedPort || loadingShutCommand}>shut</button>
+              <button onClick={() => sendCommand("no-shut")} disabled={!selectedSwitch || !selectedPort || loadingShutCommand}>no shut</button>
+              {loadingShutCommand && (
+                <div className="spinner-button-left">
+                  <Spinner isLoading={true} size={25} />
+                </div>
+              )}
+            </div>
+          )}
+          
+          <div className="send-button-wrapper">
+            <button onClick={handleSubmit} disabled={loadingSendCommand}> שלח </button>
+            {loadingSendCommand && (
+              <div className="spinner-button-left">
+                <Spinner isLoading={true} size={25} />
+              </div>
+            )}
           </div>
-        )}
-        <button onClick={handleSubmit}> שלח </button>
+        </div>
       </div>
     </GenericPage>
   );
