@@ -8,6 +8,7 @@ from application.use_cases.change_vlan import ChangeVlanUseCase
 from application.use_cases.show_logs import GetLogsUseCase
 from application.use_cases.show_int_status import GetIntStatusCase
 from application.use_cases.show_vlans import GetVlansCase
+from application.use_cases.shut_no_shut import PortState
 
 # --- Initialize Flask and Swagger ---
 app = Flask(__name__)
@@ -18,6 +19,12 @@ api = Api(app, version="1.0", title="ze lo caze amok API", description="Switch M
 ip_model = api.model("SwitchIP", {
     "ip": fields.String(required=True, description="Switch IP address")
 })
+
+port_model = api.model("PortState", {
+    "ip": fields.String(required=True, description="Switch IP address"),
+    "port": fields.String(required=True, description="Switch port (e.g., gi1/0/1)"),
+})
+
 vlan_model = api.model("VLANChange", {
     "ip": fields.String(required=True, description="Switch IP address"),
     "port": fields.String(required=True, description="Switch port (e.g., gi1/0/1)"),
@@ -64,7 +71,7 @@ class IntStatusPorts(Resource):
         return {"ports": int_status.get_ports()}
 
 
-@switch_ns.route("/switch-vlans")
+@switch_ns.route("/get-switch-vlans")
 class SwitchVlans(Resource):
     @switch_ns.expect(ip_model)
     def post(self):
@@ -73,6 +80,26 @@ class SwitchVlans(Resource):
         ssh = SSHService(password=password)
         switch_vlans = GetVlansCase(ssh, sw)
         return {"vlans": switch_vlans.get_vlans()}
+
+@switch_ns.route("/shut")
+class shutDown(Resource):
+    @switch_ns.expect(port_model)
+    def post(self):
+        data = request.get_json()
+        sw = Switch(ip=data["ip"], username="root")
+        ssh = SSHService(password=password)
+        shut = PortState(ssh, sw)
+        return {"shut": shut.shut(data["port"])}
+
+@switch_ns.route("/no-shut")
+class noShutDown(Resource):
+    @switch_ns.expect(port_model)
+    def post(self):
+        data = request.get_json()
+        sw = Switch(ip=data["ip"], username="root")
+        ssh = SSHService(password=password)
+        no_shut = PortState(ssh, sw)
+        return {"nuShut": no_shut.noShut(data["port"])}
 
 @switch_ns.route("/change-vlan")
 class ChangeVlan(Resource):
@@ -84,7 +111,7 @@ class ChangeVlan(Resource):
         port = data.get("port")
         vlan = data.get("vlan")
         if not switch_ip or not port or not vlan:
-            return {"error": "Missing switch, port, or vlan"}, 400        
+            return {"error": "Missing switch, port, or vlan"}, 400    
         
         sw = Switch(ip=switch_ip, username="root")
         ssh = SSHService(password=password)
