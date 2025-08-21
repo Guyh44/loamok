@@ -1,0 +1,3 @@
+Core rules of the app.
+Here you define entities, interfaces, types.
+It doesn't touch the ui at all.

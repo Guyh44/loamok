@@ -1,0 +1,13 @@
+.generic-page {
+  padding: 20px;
+}
+
+.generic-page h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.generic-page-content {
+  font-size: 1rem;
+  
+}

@@ -1,0 +1,3 @@
+Reusable UI elements like buttons, headers, and grids.
+Components should be generic and not tied to any specific page.
+Components can be used anywhere but must be defined here.

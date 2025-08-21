@@ -1,0 +1,102 @@
+/* App.css */
+
+/* Reset and global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #0a0a0a;
+  color: #333;
+
+  /* Center everything */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertical centering */
+  align-items: center;     /* horizontal centering */
+  min-height: 80vh;       /* take full viewport height */
+}
+
+
+
+/* Main grid layout */
+main {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  padding: 20px;
+  max-width: 1000px;
+}
+
+/* Grid blocks */
+main a div {
+  background-color: white;
+  border-radius: 16px;
+  padding: 50px 0;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #4f46e5;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+main a div:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+  background: #eef2ff;
+}
+
+.app-container {
+  text-align: center;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.grid-block {
+  background: linear-gradient(135deg, #464646, #5c92e9);
+  border-radius: 12px;
+  color: white;
+  padding: 35px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+}
+
+.grid-block:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.grid-logo {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+  main {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
