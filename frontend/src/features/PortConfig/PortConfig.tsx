@@ -136,20 +136,23 @@ const PortConfig: React.FC = () => {
       
       setLoadingPorts(true);
       setLoadingVlans(true);
-      
+      setLoadingInterfaceStatus(true);
       try {
+        
         // Fetch ports and map to { value, label } objects
         const portsList = await getPorts(selectedSwitch);
         setPorts(portsList.map((p) => ({ value: p, label: p })));
         setLoadingPorts(false);
+
+        // Show interface status container and fetch initial status
+        setShowInterfaceStatus(true);
 
         // Fetch VLANs and map to { value, label } objects for the select box
         const vlanList = await getVlans(selectedSwitch);
         setVlanOptions(vlanList.map((v) => ({ value: v, label: `VLAN ${v}` })));
         setLoadingVlans(false);
 
-        // Show interface status container and fetch initial status
-        setShowInterfaceStatus(true);
+        
         // Small delay to allow the slide animation to start
         setTimeout(async () => {
           await fetchInterfaceStatus(selectedSwitch);
