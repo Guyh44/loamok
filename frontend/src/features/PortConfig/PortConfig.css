@@ -1,14 +1,130 @@
+/* Main wrapper for both containers */
+.port-config-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  overflow-x: visible;
+  position: relative;
+}
+
+/* Interface Status Container */
+.interface-status-container {
+  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a2e 50%, #16213e 100%);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(22, 33, 62, 0.4), 0 5px 15px rgba(0, 0, 0, 0.2);
+  width: 600px;
+  height: 700px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+  pointer-events: none;
+  direction: rtl;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.interface-status-container.show {
+  opacity: 1;
+  transform: translateX(calc(-100% - 15px));
+  pointer-events: all;
+}
+
+.interface-status-header {
+  padding: 25px 30px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.interface-status-header h3 {
+  color: #e8e9f3;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(45deg, #ffffff, #57e5f5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-spinner {
+  display: flex;
+  align-items: center;
+}
+
+.interface-status-content {
+  flex: 1;
+  padding: 20px 30px;
+  overflow-y: auto;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+}
+
+/* Custom scrollbar for webkit browsers */
+.interface-status-content::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.interface-status-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.interface-status-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.interface-status-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.interface-status-content pre {
+  color: #e8e9f3;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  direction: ltr;
+  text-align: left;
+}
+
+/* Main Port Config Container */
 #port-config-container {
   background: linear-gradient(145deg, #2a2a2a 0%, #1a1a2e 50%, #16213e 100%);
   padding: 35px 60px;
   border-radius: 20px;
   box-shadow: 0 15px 35px rgba(22, 33, 62, 0.4), 0 5px 15px rgba(0, 0, 0, 0.2);
-  max-width: 600px;
-  margin: 0 auto;
+  width: 600px;
   direction: rtl;
   text-align: right;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
+  position: relative;
+  transform: translateX(0);
+  transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+  animation: slideInUp 0.6s ease-out;
+  z-index: 2;
+}
+
+#port-config-container.slide-right {
+  transform: translateX(calc(50% + 15px));
 }
 
 .config-row {
@@ -174,11 +290,7 @@
   position: relative;
 }
 
-/* Enhance the overall container with subtle animations */
-#port-config-container {
-  animation: slideInUp 0.6s ease-out;
-}
-
+/* Animations */
 @keyframes slideInUp {
   from {
     opacity: 0;
@@ -191,7 +303,39 @@
 }
 
 /* Add subtle glow effect on hover */
-#port-config-container:hover {
+#port-config-container:hover,
+.interface-status-container:hover {
   box-shadow: 0 20px 40px rgba(22, 33, 62, 0.5), 0 8px 20px rgba(79, 172, 254, 0.1);
   transition: box-shadow 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1300px) {
+  .port-config-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .interface-status-container {
+    position: relative;
+    left: auto;
+    transform: translateX(0) translateY(-50px);
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+  }
+  
+  .interface-status-container.show {
+    transform: translateX(0) translateY(0);
+  }
+  
+  #port-config-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  #port-config-container.slide-right {
+    transform: translateX(0);
+  }
 }
