@@ -9,3 +9,4 @@ class Switch:
 
     def is_vlan_allowed(self, vlan_id):
         return vlan_id in self.ALLOWED_VLANS
+    
