@@ -9,6 +9,9 @@ from application.use_cases.show_logs import GetLogsUseCase
 from application.use_cases.show_int_status import GetIntStatusCase
 from application.use_cases.show_vlans import GetVlansCase
 from application.use_cases.shut_no_shut import PortState
+from application.use_cases.local_admin import LocalAdmin
+from domain.entities.user import User
+from domain.entities.computer import Computer
 
 # --- Initialize Flask and Swagger ---
 app = Flask(__name__)
@@ -28,7 +31,12 @@ port_model = api.model("PortState", {
 vlan_model = api.model("VLANChange", {
     "ip": fields.String(required=True, description="Switch IP address"),
     "port": fields.String(required=True, description="Switch port (e.g., gi1/0/1)"),
-    "vlan": fields.String(required=True, description="VLAN ID (allowed: 222, 404, 505)")
+    "vlan": fields.String(required=True, description="VLAN ID")
+})
+
+local_admin_model = api.model("LocalAdmin", {
+    "computer_name": fields.String(required=True, description="Target computer name (e.g., vpnpc123)"),
+    "username": fields.String(required=True, description="Domain username (without domain, e.g., c_123)")
 })
 
 # --- Initialize Password and SSH Service ---
@@ -124,6 +132,26 @@ class ChangeVlan(Resource):
             return {"error": str(e)}, 400
         except Exception as e:
             return {"error": f"Unexpected error: {str(e)}"}, 500
+
+@user_ns.route("/add-local-admin")
+class AddLocalAdmin(Resource):
+    @user_ns.expect(local_admin_model)
+    def post(self):
+        data = request.get_json()
+        computer_name = data.get("computer_name")
+        username = data.get("username")
+
+        if not computer_name or not username:
+            return {"error": "Missing computer_name or username"}, 400
+
+        user_entity = User(username=username)
+        computer_entity = Computer(computername=computer_name)
+
+        admin_service = LocalAdmin()
+        result = admin_service.add_user_to_admins(user_entity, computer_entity)
+
+        return {"result": result}, 200
+    
 
 @app.route("/api/pages/<page_id>", methods=["GET"])
 def get_page(page_id):
