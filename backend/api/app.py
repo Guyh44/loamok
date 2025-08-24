@@ -8,6 +8,7 @@ from application.use_cases.change_vlan import ChangeVlanUseCase
 from application.use_cases.show_logs import GetLogsUseCase
 from application.use_cases.show_int_status import GetIntStatusCase
 from application.use_cases.show_vlans import GetVlansCase
+from application.use_cases.ad_group import add_user_to_group
 from application.use_cases.shut_no_shut import PortState
 from application.use_cases.local_admin import LocalAdmin
 from domain.entities.user import User
@@ -39,13 +40,18 @@ local_admin_model = api.model("LocalAdmin", {
     "username": fields.String(required=True, description="Domain username (without domain, e.g., c_123)")
 })
 
+group_model = api.model("ADDTOGROUP", {
+    "username": fields.String(required=True, description="Username to add to AD group"),
+    "groupname": fields.String(required=True, description="AD group to add the user to")
+})
+
 # --- Initialize Password and SSH Service ---
 KEY_PATH = r"C:\Users\Hamburg\Desktop\de.txt"
 password = PasswordService(KEY_PATH).decrypt_password()
 
 # --- Namespaces ---
 switch_ns = api.namespace("switch", description="Switch operations")
-user_ns = api.namespace("user", description="user operations")
+user_ns = api.namespace("user", description="User operations")
 
 # --- Endpoints ---
 @switch_ns.route("/logs")
@@ -133,6 +139,7 @@ class ChangeVlan(Resource):
         except Exception as e:
             return {"error": f"Unexpected error: {str(e)}"}, 500
 
+
 @user_ns.route("/add-local-admin")
 class AddLocalAdmin(Resource):
     @user_ns.expect(local_admin_model)
@@ -152,6 +159,35 @@ class AddLocalAdmin(Resource):
 
         return {"result": result}, 200
     
+=======
+#
+# Supposed to work but must be checked on momo
+#
+@user_ns.route("/add-to-group")
+class AddToADGroup(Resource):
+    @user_ns.expect(group_model)
+    def post(self):
+        try:
+            data = request.get_json()
+            username = data.get("username")
+            groupname = data.get("groupname")
+
+            if not username or not groupname:
+                return {"status": "error", "message": "Username and groupname are required."}, 400
+            # calls to the function
+            result = add_user_to_group(username, groupname)
+            return jsonify(result)
+
+        except ValueError as ve:
+            # Input validation errors
+            return {"status": "error", "message": str(ve)}, 400
+        except RuntimeError as re:
+            # PowerShell / AD errors
+            return {"status": "error", "message": str(re)}, 500
+        except Exception as e:
+            # Catch-all for unexpected errors
+            return {"status": "error", "message": f"Unexpected error: {str(e)}"}, 500
+
 
 @app.route("/api/pages/<page_id>", methods=["GET"])
 def get_page(page_id):
