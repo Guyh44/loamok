@@ -5,7 +5,29 @@ class GetIntStatusCase:
     def __init__(self, ssh_service, switch: Switch):
         self.ssh = ssh_service
         self.switch = switch
+    
+    def execute(self):
+        
+        output = self.ssh.run_commands(
+            ip=self.switch.ip,
+            username=self.switch.username,
+            commands=[
+                "terminal length 0",
+                "show int status"
+            ]
+        )
 
+        # Detect invalid input (switch does not support this command)
+        if "% Invalid input" in output or "^" in output:
+            commands = ["terminal length 0", "show interfaces description"]
+            output = self.ssh.run_commands(
+                ip=self.switch.ip,
+                username=self.switch.username,
+                commands=commands
+            )
+        print(output)
+        return output
+    
     def get_ports(self):
         # Try default command
         commands = ["terminal length 0", "show int status"]
