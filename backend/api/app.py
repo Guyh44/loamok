@@ -158,8 +158,7 @@ class AddLocalAdmin(Resource):
         result = admin_service.add_user_to_admins(user_entity, computer_entity)
 
         return {"result": result}, 200
-    
-=======
+
 #
 # Supposed to work but must be checked on momo
 #
