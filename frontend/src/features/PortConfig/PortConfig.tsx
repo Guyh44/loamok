@@ -6,7 +6,7 @@ import type { IPDropdownOption } from "../../data/switchs";
 import { getPorts } from "./getPorts";
 import { getVlans } from "./getVlan";
 import type { VlanDropdownOption } from "./getVlan"; 
-import Spinner from "../../components/spinner";
+import Spinner from "../../components/Spinner";
 
 const PortConfig: React.FC = () => {
   const [selectedSwitch, setSelectedSwitch] = useState<string>("");
