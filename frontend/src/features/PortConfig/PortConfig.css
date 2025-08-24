@@ -1,4 +1,4 @@
-/* Main wrapper for both containers */
+/* Main wrapper for both containers */ 
 .port-config-wrapper {
   display: flex;
   justify-content: center;
@@ -20,21 +20,36 @@
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
-  pointer-events: none;
   direction: rtl;
   text-align: right;
   display: flex;
   flex-direction: column;
   z-index: 1;
+  
+  /* Initial state - hidden and centered */
+  opacity: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+  visibility: hidden;
+  
+  /* Separate transitions for better control */
+  transition: 
+    opacity 0.6s ease-in-out,
+    transform 0.6s ease-in-out,
+    visibility 0s linear 0.6s;
 }
 
 .interface-status-container.show {
   opacity: 1;
   transform: translateX(calc(-100% - 15px));
   pointer-events: all;
+  visibility: visible;
+  
+  /* Override visibility delay for showing */
+  transition: 
+    opacity 0.6s ease-in-out,
+    transform 0.6s ease-in-out,
+    visibility 0s linear 0s;
 }
 
 .interface-status-header {
@@ -117,10 +132,16 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   position: relative;
-  transform: translateX(0);
-  transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
-  animation: slideInUp 0.6s ease-out;
   z-index: 2;
+  
+  /* Initial position */
+  transform: translateX(0);
+  
+  /* Consistent transition timing */
+  transition: transform 0.6s ease-in-out;
+  
+  /* Initial slide-in animation */
+  animation: slideInUp 0.6s ease-out;
 }
 
 #port-config-container.slide-right {
@@ -302,11 +323,10 @@
   }
 }
 
-/* Add subtle glow effect on hover */
+/* Add subtle glow effect on hover - but don't interfere with transitions */
 #port-config-container:hover,
 .interface-status-container:hover {
   box-shadow: 0 20px 40px rgba(22, 33, 62, 0.5), 0 8px 20px rgba(79, 172, 254, 0.1);
-  transition: box-shadow 0.3s ease;
 }
 
 /* Responsive adjustments */

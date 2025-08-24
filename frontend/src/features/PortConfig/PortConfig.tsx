@@ -25,6 +25,9 @@ const PortConfig: React.FC = () => {
   const [loadingInterfaceStatus, setLoadingInterfaceStatus] = useState<boolean>(false);
 
   const interfaceStatusRef = useRef<HTMLDivElement>(null);
+  
+  // Add ref to track animation state
+  const animationInProgressRef = useRef<boolean>(false);
 
   const fetchInterfaceStatus = async (switchIp: string) => {
     setLoadingInterfaceStatus(true);
@@ -127,48 +130,80 @@ const PortConfig: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!selectedSwitch) {
+        // Reset everything when no switch is selected
         setPorts([]);
         setVlanOptions([]);
-        setShowInterfaceStatus(false);
-        setInterfaceStatus("");
+        setLoadingInterfaceStatus(false); // Reset interface status loading
+        
+        // Only hide if currently showing
+        if (showInterfaceStatus) {
+          setShowInterfaceStatus(false);
+          animationInProgressRef.current = true;
+          
+          // Wait for hide animation to complete
+          setTimeout(() => {
+            setInterfaceStatus("");
+            animationInProgressRef.current = false;
+          }, 600);
+        }
         return;
       }
       
+      // Prevent multiple simultaneous animations
+      if (animationInProgressRef.current) {
+        return;
+      }
+      
+      animationInProgressRef.current = true;
       setLoadingPorts(true);
       setLoadingVlans(true);
-      setLoadingInterfaceStatus(true);
+      setLoadingInterfaceStatus(true); // Start interface status loading immediately
+      
       try {
-        
-        // Fetch ports and map to { value, label } objects
-        const portsList = await getPorts(selectedSwitch);
-        setPorts(portsList.map((p) => ({ value: p, label: p })));
-        setLoadingPorts(false);
-
-        // Show interface status container and fetch initial status
+        // First, show the interface status container (this triggers the slide animation)
         setShowInterfaceStatus(true);
-
-        // Fetch VLANs and map to { value, label } objects for the select box
-        const vlanList = await getVlans(selectedSwitch);
-        setVlanOptions(vlanList.map((v) => ({ value: v, label: `VLAN ${v}` })));
-        setLoadingVlans(false);
-
         
-        // Small delay to allow the slide animation to start
-        setTimeout(async () => {
-          await fetchInterfaceStatus(selectedSwitch);
-        }, 200);
+        // Use requestAnimationFrame to ensure DOM has updated before starting data fetch
+        requestAnimationFrame(async () => {
+          try {
+            // Fetch ports and VLANs in parallel
+            const [portsList, vlanList] = await Promise.all([
+              getPorts(selectedSwitch),
+              getVlans(selectedSwitch)
+            ]);
+            
+            // Update states
+            setPorts(portsList.map((p) => ({ value: p, label: p })));
+            setVlanOptions(vlanList.map((v) => ({ value: v, label: `VLAN ${v}` })));
+            setLoadingPorts(false);
+            setLoadingVlans(false);
+            
+            // Wait for slide animation to complete before fetching interface status
+            setTimeout(async () => {
+              await fetchInterfaceStatus(selectedSwitch);
+              animationInProgressRef.current = false;
+            }, 650); // Slightly longer than the 600ms transition
+
+          } catch (err) {
+            console.error("Failed to fetch ports or VLANs:", err);
+            setPorts([]);
+            setVlanOptions([]);
+            setLoadingPorts(false);
+            setLoadingVlans(false);
+            setLoadingInterfaceStatus(false); // Reset on error
+            animationInProgressRef.current = false;
+          }
+        });
 
       } catch (err) {
-        console.error("Failed to fetch ports or VLANs:", err);
-        setPorts([]);
-        setVlanOptions([]);
-        setLoadingPorts(false);
-        setLoadingVlans(false);
+        console.error("Failed to initialize data fetch:", err);
+        setLoadingInterfaceStatus(false); // Reset on error
+        animationInProgressRef.current = false;
       }
     };
 
     fetchData();
-  }, [selectedSwitch]);
+  }, [selectedSwitch, showInterfaceStatus]); // Add showInterfaceStatus to dependencies
 
   return (
     <GenericPage>
