@@ -26,13 +26,11 @@
   flex-direction: column;
   z-index: 1;
   
-  /* Initial state - hidden and centered */
   opacity: 0;
   transform: translateX(-50%);
   pointer-events: none;
   visibility: hidden;
   
-  /* Separate transitions for better control */
   transition: 
     opacity 0.6s ease-in-out,
     transform 0.6s ease-in-out,
@@ -45,7 +43,6 @@
   pointer-events: all;
   visibility: visible;
   
-  /* Override visibility delay for showing */
   transition: 
     opacity 0.6s ease-in-out,
     transform 0.6s ease-in-out,
@@ -87,23 +84,20 @@
   scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
 }
 
-/* Custom scrollbar for webkit browsers */
+/* Custom scrollbar */
 .interface-status-content::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-
 .interface-status-content::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
 }
-
 .interface-status-content::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
   transition: background 0.3s ease;
 }
-
 .interface-status-content::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
@@ -122,126 +116,20 @@
 
 /* Main Port Config Container */
 #port-config-container {
-  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a2e 50%, #16213e 100%);
-  padding: 35px 60px;
-  border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(22, 33, 62, 0.4), 0 5px 15px rgba(0, 0, 0, 0.2);
   width: 600px;
-  direction: rtl;
-  text-align: right;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
   position: relative;
   z-index: 2;
-  
-  /* Initial position */
   transform: translateX(0);
-  
-  /* Consistent transition timing */
   transition: transform 0.6s ease-in-out;
-  
-  /* Initial slide-in animation */
   animation: slideInUp 0.6s ease-out;
 }
+
 
 #port-config-container.slide-right {
   transform: translateX(calc(50% + 15px));
 }
 
-.config-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-  position: relative;
-}
-
-.config-row label {
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: #e8e9f3;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  min-width: 130px;
-  flex-shrink: 0;
-}
-
-.config-row select {
-  margin-left: 15px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  font-size: 1rem;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.05);
-  color: #e8e9f3;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
-  width: 300px;
-  flex-shrink: 0;
-}
-
-.config-row select:focus {
-  outline: none;
-  border-color: #4facfe;
-  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.config-row select option {
-  background: #2a2a3e;
-  color: #e8e9f3;
-}
-
-.config-row select option:hover {
-  background: #2d1b69 !important;
-  color: #e0e0e0 !important;
-}
-
-.config-row select option:checked {
-  background: #2d1b69 !important;
-  color: #e0e0e0 !important;
-}
-
-.css-yk16xz-control {
-  font-size: 1rem;
-  min-height: 45px;
-}
-
-#port-config-container button {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d1b69 50%, #1a1a1a 100%);
-  color: #e0e0e0;
-  width: 100%;
-  padding: 14px 20px;
-  font-size: 16px;
-  font-weight: 600;
-  margin-top: 15px;
-  cursor: pointer;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(45, 27, 105, 0.3);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-#port-config-container button:hover {
-  background: linear-gradient(135deg, #2d1b69 0%, #1a1a1a 50%, #2d1b69 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(45, 27, 105, 0.4);
-}
-
-#port-config-container button:active {
-  transform: translateY(0px);
-  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
-}
-
-#port-config-container button:disabled {
-  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-  opacity: 0.6;
-}
-
+/* Extra Buttons inside PortConfig */
 #port-config-container .extra-buttons {
   display: flex;
   gap: 15px;
@@ -251,54 +139,12 @@
 
 #port-config-container .extra-buttons button {
   flex: 1;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d1b69 50%, #1a1a1a 100%);
-  color: #e0e0e0;
-  padding: 12px 16px;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
   height: 48px;
   margin-top: 0;
-  box-shadow: 0 6px 15px rgba(45, 27, 105, 0.25);
 }
 
-#port-config-container .extra-buttons button:hover {
-  background: linear-gradient(135deg, #2d1b69 0%, #1a1a1a 50%, #2d1b69 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(45, 27, 105, 0.35);
-}
-
-#port-config-container .extra-buttons button:active {
-  transform: translateY(0px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.25);
-}
-
-#port-config-container .extra-buttons button:disabled {
-  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-  opacity: 0.6;
-}
-
-.actions-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-/* Spinner positioning classes */
-.spinner-inline {
-  position: absolute;
-  left: -50px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-}
-
+/* Spinner positioning */
+.spinner-inline,
 .spinner-button-left {
   position: absolute;
   left: -50px;
@@ -313,29 +159,16 @@
 
 /* Animations */
 @keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Add subtle glow effect on hover - but don't interfere with transitions */
-#port-config-container:hover,
-.interface-status-container:hover {
-  box-shadow: 0 20px 40px rgba(22, 33, 62, 0.5), 0 8px 20px rgba(79, 172, 254, 0.1);
-}
-
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 1300px) {
   .port-config-wrapper {
     flex-direction: column;
     align-items: center;
   }
-  
   .interface-status-container {
     position: relative;
     left: auto;
@@ -344,18 +177,36 @@
     max-width: 600px;
     margin-bottom: 20px;
   }
-  
   .interface-status-container.show {
     transform: translateX(0) translateY(0);
   }
-  
   #port-config-container {
-    position: relative;
     width: 100%;
     max-width: 600px;
   }
-  
   #port-config-container.slide-right {
     transform: translateX(0);
   }
 }
+
+.port-config {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  padding: 20px;
+
+  /* animate whole container from left */
+  animation: slide-in-left 0.6s ease-out;
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-120px); /* start further left */
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
