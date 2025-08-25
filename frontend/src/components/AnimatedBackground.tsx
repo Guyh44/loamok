@@ -55,7 +55,7 @@ const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
           className={`column ${column.isOdd ? 'move-up' : 'move-down'}`}
           style={{
             left: `${column.x}px`,
-            animationDuration: `${speed}s`,
+            animationDuration: `${(200 / speed)}s`,
           }}
         >
           {Array.from({ length: column.imageCount * 2 }, (_, imgIndex) => (

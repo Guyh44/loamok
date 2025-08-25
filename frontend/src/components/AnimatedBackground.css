@@ -21,11 +21,11 @@
 
 /* Movement directions */
 .column.move-up {
-  animation-name: moveUp;
+  animation: moveUp linear infinite;
 }
 
 .column.move-down {
-  animation-name: moveDown;
+  animation: moveDown linear infinite;
 }
 
 /* Background image inside each column */
@@ -42,12 +42,13 @@
 }
 
 /* Animations */
+
 @keyframes moveUp {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-50vh); }
+  from { transform: translateY(0); }
+  to   { transform: translateY(-100%); } /* scroll entire column height */
 }
 
 @keyframes moveDown {
-  0% { transform: translateY(-50vh); }
-  100% { transform: translateY(0); }
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(0); }
 }

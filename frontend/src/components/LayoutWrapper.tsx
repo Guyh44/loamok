@@ -11,8 +11,8 @@ const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
       {/* Global animated background */}
       <AnimatedBackground 
         imagePath="/assets/mask.png" // Replace with your actual mask image path
-        opacity={0.1}
-        speed={25}
+        opacity={0.09}
+        speed={0.8}
       />
       
       {/* All your page content */}
