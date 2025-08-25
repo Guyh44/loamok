@@ -159,7 +159,7 @@ class AddLocalAdmin(Resource):
 
         return {"result": result}, 200
     
-=======
+
 #
 # Supposed to work but must be checked on momo
 #
