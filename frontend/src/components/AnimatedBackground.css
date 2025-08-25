@@ -1,0 +1,53 @@
+.animated-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Columns are evenly spaced */
+.column {
+  position: absolute;
+  top: 0;
+  width: 120px;              /* match TSX columnWidth */
+  height: 200vh;             /* double for seamless loop */
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Movement directions */
+.column.move-up {
+  animation-name: moveUp;
+}
+
+.column.move-down {
+  animation-name: moveDown;
+}
+
+/* Background image inside each column */
+.background-image {
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin: 100px auto 0 auto; /* consistent vertical gap */
+  filter: grayscale(100%);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  transform: rotate(0deg);   /* no random rotation */
+}
+
+/* Animations */
+@keyframes moveUp {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50vh); }
+}
+
+@keyframes moveDown {
+  0% { transform: translateY(-50vh); }
+  100% { transform: translateY(0); }
+}
