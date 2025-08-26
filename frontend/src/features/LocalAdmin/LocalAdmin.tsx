@@ -106,7 +106,6 @@ const LocalAdmin: React.FC = () => {
 
     return (
         <GenericPage>
-            <div id="local-admin-container">
                 {/* Username input */}
                 <div className="config-row">
                     <label>בחר משתמש:</label>
@@ -151,7 +150,6 @@ const LocalAdmin: React.FC = () => {
                         {statusMessage.message}
                     </div>
                 )}
-            </div>
         </GenericPage>
     );
 };

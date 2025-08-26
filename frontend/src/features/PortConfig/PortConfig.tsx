@@ -188,8 +188,8 @@ const PortConfig: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Config */}
-        <div id="port-config-container" className={showInterfaceStatus ? "slide-right" : ""}>
+        {/* Main Config - Wrapped to move entire background */}
+        <div className={`port-config-container-wrapper ${showInterfaceStatus ? "slide-right" : ""}`}>
           <SelectBox
             id="switch"
             label="בחר SWITCH:"
@@ -204,7 +204,7 @@ const PortConfig: React.FC = () => {
           <div className="config-row-with-spinner">
             <SelectBox
               id="port"
-              label="בחר פורט:"
+              label="בחר PORT:"
               value={selectedPort}
               onChange={setSelectedPort}
               options={ports}

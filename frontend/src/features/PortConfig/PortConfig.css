@@ -114,9 +114,8 @@
   text-align: left;
 }
 
-/* Main Port Config Container */
-#port-config-container {
-  width: 600px;
+/* Main Port Config Container - This moves the entire background */
+.port-config-container-wrapper {
   position: relative;
   z-index: 2;
   transform: translateX(0);
@@ -124,28 +123,39 @@
   animation: slideInUp 0.6s ease-out;
 }
 
-
-#port-config-container.slide-right {
+.port-config-container-wrapper.slide-right {
   transform: translateX(calc(50% + 15px));
 }
 
+/* Spinner positioning for config rows */
+.config-row-with-spinner {
+  position: relative;
+}
+
+.config-row-with-spinner .spinner-inline {
+  position: absolute;
+  left: -50px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
 /* Extra Buttons inside PortConfig */
-#port-config-container .extra-buttons {
+.extra-buttons {
   display: flex;
   gap: 15px;
   margin-bottom: 15px;
   position: relative;
 }
 
-#port-config-container .extra-buttons button {
+.extra-buttons button {
   flex: 1;
   height: 48px;
   margin-top: 0;
 }
 
-/* Spinner positioning */
-.spinner-inline,
-.spinner-button-left {
+/* Spinner positioning for buttons */
+.extra-buttons .spinner-button-left {
   position: absolute;
   left: -50px;
   top: 50%;
@@ -155,6 +165,21 @@
 
 .send-button-wrapper {
   position: relative;
+}
+
+.send-button-wrapper .spinner-button-left {
+  position: absolute;
+  left: -50px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+/* Actions wrapper */
+.actions-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 /* Animations */
@@ -180,11 +205,11 @@
   .interface-status-container.show {
     transform: translateX(0) translateY(0);
   }
-  #port-config-container {
+  .port-config-container-wrapper {
     width: 100%;
     max-width: 600px;
   }
-  #port-config-container.slide-right {
+  .port-config-container-wrapper.slide-right {
     transform: translateX(0);
   }
 }
@@ -209,4 +234,3 @@
     opacity: 1;
   }
 }
-
