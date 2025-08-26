@@ -16,6 +16,11 @@
   animation: slideInUp 0.6s ease-out;
 }
 
+/* Disable default animation when PortConfig is active */
+#generic-container.port-config-active {
+  animation: none;
+}
+
 #generic-container:hover {
   box-shadow: 0 20px 40px rgba(22, 33, 62, 0.5), 0 8px 20px rgba(79, 172, 254, 0.1);
   transition: box-shadow 0.3s ease;

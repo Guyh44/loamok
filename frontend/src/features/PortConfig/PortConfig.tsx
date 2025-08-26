@@ -170,11 +170,57 @@ const PortConfig: React.FC = () => {
     fetchData();
   }, [selectedSwitch, showInterfaceStatus]);
 
+  // Disable GenericPage animation on mount
+  useEffect(() => {
+    const genericContainer = document.getElementById('generic-container');
+    if (genericContainer) {
+      genericContainer.classList.add('port-config-active');
+    }
+    return () => {
+      const genericContainer = document.getElementById('generic-container');
+      if (genericContainer) {
+        genericContainer.classList.remove('port-config-active');
+      }
+    };
+  }, []);
+
+  // Add effect to manage the CSS class on the generic container
+  useEffect(() => {
+    const genericContainer = document.getElementById('generic-container');
+    if (genericContainer) {
+      // Add a class to indicate we're in PortConfig to control animations
+      genericContainer.classList.add('port-config-active');
+      
+      if (showInterfaceStatus) {
+        genericContainer.classList.add('port-config-slide-right');
+      } else {
+        genericContainer.classList.remove('port-config-slide-right');
+      }
+    }
+
+    // Cleanup when component unmounts
+    return () => {
+      const genericContainer = document.getElementById('generic-container');
+      if (genericContainer) {
+        genericContainer.classList.remove('port-config-slide-right');
+        genericContainer.classList.remove('port-config-active');
+      }
+    };
+  }, [showInterfaceStatus]);
+
   return (
     <GenericPage title="Port Configuration">
-      <div className="port-config-wrapper">
+      <div className="port-config-wrapper" style={{ animation: 'none' }}>
         {/* Interface Status Container */}
-        <div className={`interface-status-container ${showInterfaceStatus ? "show" : ""}`}>
+        <div 
+          className={`interface-status-container ${showInterfaceStatus ? "show" : ""}`}
+          style={{
+            // Force the container to stay in its fixed position
+            left: 'calc(50% - 615px)',
+            transform: 'translateY(-50%)',
+            animation: 'none'
+          }}
+        >
           <div className="interface-status-header">
             <h3>Interface Status - {selectedSwitch}</h3>
             {loadingInterfaceStatus && (
@@ -188,8 +234,8 @@ const PortConfig: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Config - Wrapped to move entire background */}
-        <div className={`port-config-container-wrapper ${showInterfaceStatus ? "slide-right" : ""}`}>
+        {/* Main Config - Now the generic container will slide */}
+        <div className="port-config-container-wrapper">
           <SelectBox
             id="switch"
             label="בחר SWITCH:"
