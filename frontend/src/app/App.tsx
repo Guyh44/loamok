@@ -4,6 +4,7 @@ import Home from "../features/home/Home";
 import GenericPage from "./GenericPage.tsx";
 import PortConfig from "../features/PortConfig/PortConfig.tsx";
 import LocalAdmin from "../features/LocalAdmin/LocalAdmin.tsx";
+import TerMon from "../features/TerMon/TerMon.tsx";
 import "../App.css";
 
 const App: React.FC = () => {
@@ -18,6 +19,7 @@ const App: React.FC = () => {
         <Route path="/manage-vms" element={<GenericPage/>} />
         <Route path="/groups" element={<GenericPage/>} />
         <Route path="/create-user" element={<GenericPage/>} />
+        <Route path="/ter-mon" element={<TerMon/>} />
       </Routes>
     </>
   );

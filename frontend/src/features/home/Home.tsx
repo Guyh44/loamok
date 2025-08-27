@@ -16,11 +16,11 @@ const Home: React.FC = () => {
     { title: "ניהול מכונות", logo: logo3, link: "/manage-vms", active: true },
     { title: "AD הוספה לקבוצת", logo: logo3, link: "/groups", active: true },
     { title: "יצירת משתמש", logo: logo3, link: "/create-user", active: true },
+    { title: "ter mon הפעלת", logo: logo3, link: "/ter-mon", active: true },
   ];
 
   // Add "Coming Soon" blocks to fill the grid
   const comingSoonBlocks = [
-    { title: "Coming soon...", logo: "", link: "", active: false },
     { title: "Coming soon...", logo: "", link: "", active: false },
     { title: "Coming soon...", logo: "", link: "", active: false },
     { title: "Coming soon...", logo: "", link: "", active: false },
