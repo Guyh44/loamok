@@ -10,6 +10,23 @@ const TerMon: React.FC = () => {
     const [logs, setLogs] = useState<string[]>([]);
     const abortControllerRef = useRef<AbortController | null>(null);
 
+    const formatLogLine = (line: string) => {
+        // Check if line contains our formatted output with arrow and state
+        if (line.includes('|')) {
+            const [content, state] = line.split('|');
+            const isUp = state?.trim() === 'up';
+            
+            return (
+                <div className={`log-line ${isUp ? 'interface-up' : 'interface-down'}`}>
+                    {content}
+                </div>
+            );
+        }
+        
+        // Regular log line
+        return <div className="log-line">{line}</div>;
+    };
+
     const handleSubmit = async () => {
         setLoadingSendCommand(true);
         setLogs([]);
@@ -33,7 +50,8 @@ const TerMon: React.FC = () => {
                 const { value, done } = await reader.read();
                 if (done) break;
                 const chunk = decoder.decode(value, { stream: true });
-                setLogs(prev => [...prev, ...chunk.split("\n")]);
+                const lines = chunk.split("\n").filter(line => line.trim());
+                setLogs(prev => [...prev, ...lines]);
             }
         } catch (err: any) {
             if (err.name === "AbortError") {
@@ -89,7 +107,7 @@ const TerMon: React.FC = () => {
                             עצור
                         </button>
                         {loadingSendCommand && (
-                            <div className="spinner-button-left">
+                            <div className="spinner-netx-to-start">
                                 <Spinner isLoading={true} size={25} />
                             </div>
                         )}
@@ -99,7 +117,9 @@ const TerMon: React.FC = () => {
                 {/* Logs display */}
                 <div className="terminal-output">
                     {logs.map((line, i) => (
-                        <div key={i}>{line}</div>
+                        <div key={i}>
+                            {formatLogLine(line)}
+                        </div>
                     ))}
                 </div>
             </div>

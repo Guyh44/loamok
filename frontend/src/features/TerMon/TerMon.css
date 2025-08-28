@@ -35,3 +35,46 @@
 .terminal-output::-webkit-scrollbar-track {
     background: transparent;
 }
+
+/* Log line styling */
+.log-line {
+    margin-bottom: 2px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+}
+
+/* Interface up styling */
+.interface-up {
+    color: #00ff55 !important;
+    background: rgba(0, 255, 85, 0.05);
+    border-left: 3px solid #00ff55;
+    padding-left: 8px;
+}
+
+/* Interface down styling */  
+.interface-down {
+    color: #ff4444 !important;
+    background: rgba(255, 68, 68, 0.05);
+    border-left: 3px solid #ff4444;
+    padding-left: 8px;
+}
+
+/* Hover effects */
+.interface-up:hover {
+    background: rgba(0, 255, 85, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 255, 85, 0.2);
+}
+
+.interface-down:hover {
+    background: rgba(255, 68, 68, 0.1);
+    box-shadow: 0 2px 4px rgba(255, 68, 68, 0.2);
+}
+
+.spinner-netx-to-start {
+  position: absolute;
+  left: -50px;
+  top: 30%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
