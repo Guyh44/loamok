@@ -97,7 +97,7 @@ const TerMon: React.FC = () => {
                 </div>
 
                 {/* Logs display */}
-                <div className="terminal-output" style={{ marginTop: "20px", maxHeight: "400px", overflowY: "scroll", background: "#111", color: "rgba(0, 255, 21, 1)", padding: "10px", fontFamily: "monospace" }}>
+                <div className="terminal-output">
                     {logs.map((line, i) => (
                         <div key={i}>{line}</div>
                     ))}
