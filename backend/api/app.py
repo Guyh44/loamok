@@ -146,8 +146,6 @@ class TerMon(Resource):
     def post(self):
         data = request.get_json()
         ip = data.get("ip")
-        if not ip:
-            return {"error": "Missing switch IP"}, 400
 
         sw = Switch(ip=ip, username="root")
         ssh = SSHService(password=password)
@@ -156,9 +154,9 @@ class TerMon(Resource):
         def generate():
             try:
                 for line in use_case.stream():
-                    yield line.encode("utf-8")
+                    yield line
             except Exception as e:
-                yield f"Error: {str(e)}\n"
+                yield f"Error: {str(e)}\n".encode("utf-8")
 
         return Response(generate(), mimetype="text/plain", direct_passthrough=True)
 
