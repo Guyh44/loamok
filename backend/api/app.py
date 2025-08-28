@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from flask_restx import Api, Resource, fields
 from infrastructure.services.password_service import PasswordService
@@ -11,6 +11,7 @@ from application.use_cases.show_vlans import GetVlansCase
 from application.use_cases.ad_group import add_user_to_group
 from application.use_cases.shut_no_shut import PortState
 from application.use_cases.local_admin import LocalAdmin
+from application.use_cases.ter_mon import TerMonUseCase
 from domain.entities.user import User
 from domain.entities.computer import Computer
 
@@ -139,6 +140,27 @@ class ChangeVlan(Resource):
         except Exception as e:
             return {"error": f"Unexpected error: {str(e)}"}, 500
 
+@switch_ns.route("/termon")
+class TerMon(Resource):
+    @switch_ns.expect(ip_model)
+    def post(self):
+        data = request.get_json()
+        ip = data.get("ip")
+
+        sw = Switch(ip=ip, username="root")
+        ssh = SSHService(password=password)
+        use_case = TerMonUseCase(ssh, sw)
+
+        def generate():
+            try:
+                for line in use_case.stream():
+                    yield line
+            except Exception as e:
+                yield f"Error: {str(e)}\n".encode("utf-8")
+
+        return Response(generate(), mimetype="text/plain", direct_passthrough=True)
+
+    
 
 @user_ns.route("/add-local-admin")
 class AddLocalAdmin(Resource):
@@ -158,7 +180,6 @@ class AddLocalAdmin(Resource):
         result = admin_service.add_user_to_admins(user_entity, computer_entity)
 
         return {"result": result}, 200
-
 #
 # Supposed to work but must be checked on momo
 #
