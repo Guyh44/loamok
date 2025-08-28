@@ -73,55 +73,53 @@ const TerMon: React.FC = () => {
 
     return (
         <GenericPage>
-            <div id="local-admin-container">
-                {/* Switch selection */}
-                <div className="config-row">
-                    <label>בחר SWITCH:</label>
-                    <select
-                        value={selectedSwitch}
-                        onChange={(e) => setSelectedSwitch(e.target.value)}
-                    >
-                        <option value="">-- בחר SWITCH --</option>
-                        {switchOptions.map(option => (
-                            <option key={option.ip} value={option.ip}>
-                                {option.ricuz} : {option.ip}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* Buttons */}
-                <div className="actions-wrapper">
-                    <div className="send-button-wrapper">
-                        <button 
-                            onClick={handleSubmit} 
-                            disabled={loadingSendCommand || !selectedSwitch}
-                        >
-                            התחל
-                        </button>
-                        <button
-                            onClick={handleStop}
-                            disabled={!loadingSendCommand}
-                            style={{ marginLeft: "10px" }}
-                        >
-                            עצור
-                        </button>
-                        {loadingSendCommand && (
-                            <div className="spinner-netx-to-start">
-                                <Spinner isLoading={true} size={25} />
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Logs display */}
-                <div className="terminal-output">
-                    {logs.map((line, i) => (
-                        <div key={i}>
-                            {formatLogLine(line)}
-                        </div>
+            {/* Switch selection */}
+            <div className="config-row">
+                <label>בחר SWITCH:</label>
+                <select
+                    value={selectedSwitch}
+                    onChange={(e) => setSelectedSwitch(e.target.value)}
+                >
+                    <option value="">-- בחר SWITCH --</option>
+                    {switchOptions.map(option => (
+                        <option key={option.ip} value={option.ip}>
+                            {option.ricuz} : {option.ip}
+                        </option>
                     ))}
+                </select>
+            </div>
+
+            {/* Buttons */}
+            <div className="actions-wrapper">
+                <div className="send-button-wrapper">
+                    <button 
+                        onClick={handleSubmit} 
+                        disabled={loadingSendCommand || !selectedSwitch}
+                    >
+                        התחל
+                    </button>
+                    <button
+                        onClick={handleStop}
+                        disabled={!loadingSendCommand}
+                        style={{ marginLeft: "10px" }}
+                    >
+                        עצור
+                    </button>
+                    {loadingSendCommand && (
+                        <div className="spinner-netx-to-start">
+                            <Spinner isLoading={true} size={25} />
+                        </div>
+                    )}
                 </div>
+            </div>
+
+            {/* Logs display */}
+            <div className="terminal-output">
+                {logs.map((line, i) => (
+                    <div key={i}>
+                        {formatLogLine(line)}
+                    </div>
+                ))}
             </div>
         </GenericPage>
     );
