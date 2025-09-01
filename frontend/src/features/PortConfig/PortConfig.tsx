@@ -236,21 +236,19 @@ const PortConfig: React.FC = () => {
         </div>
 
         <div className="actions-wrapper">
-          {selectedPort && (
-            <div className="extra-buttons">
-              <button onClick={() => sendCommand("shut")} disabled={!selectedSwitch || !selectedPort || loadingShutCommand}>
-                shut
-              </button>
-              <button onClick={() => sendCommand("no-shut")} disabled={!selectedSwitch || !selectedPort || loadingShutCommand}>
-                no shut
-              </button>
-              {loadingShutCommand && (
-                <div className="spinner-button-left">
-                  <Spinner isLoading={true} size={25} />
-                </div>
-              )}
-            </div>
-          )}
+          <div className="extra-buttons">
+            <button onClick={() => sendCommand("shut")} disabled={!selectedSwitch || !selectedPort || loadingShutCommand}>
+              shut
+            </button>
+            <button onClick={() => sendCommand("no-shut")} disabled={!selectedSwitch || !selectedPort || loadingShutCommand}>
+              no shut
+            </button>
+            {loadingShutCommand && (
+              <div className="spinner-button-left">
+                <Spinner isLoading={true} size={25} />
+              </div>
+            )}
+          </div>
 
           <div className="send-button-wrapper">
             <button
