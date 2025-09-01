@@ -14,7 +14,6 @@ const Home: React.FC = () => {
     { title: "קנפוג פורטים", logo: siv_icon, link: "/change-vlan", active: true },
     { title: "ניהול משתמשים", logo: users_icon, link: "/manage-users", active: true },
     { title: "הוספת אדמין לעמדה", logo: king_icon, link: "/add-admin", active: true },
-    { title: "ניהול מכונות", logo: logo3, link: "/manage-vms", active: true },
     { title: "AD הוספה לקבוצת", logo: addad, link: "/groups", active: true },
     { title: "יצירת משתמש", logo: logo3, link: "/create-user", active: true },
     { title: "ter mon הפעלת", logo: logo3, link: "/ter-mon", active: true },
@@ -22,6 +21,7 @@ const Home: React.FC = () => {
 
   // Add "Coming Soon" blocks to fill the grid
   const comingSoonBlocks = [
+    { title: "Coming soon...", logo: "", link: "", active: false },
     { title: "Coming soon...", logo: "", link: "", active: false },
     { title: "Coming soon...", logo: "", link: "", active: false },
     { title: "Coming soon...", logo: "", link: "", active: false },
