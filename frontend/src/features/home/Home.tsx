@@ -5,6 +5,8 @@ import siv_icon from "../../assets/siv.png";
 import users_icon from "../../assets/users.svg";
 import king_icon from "../../assets/king.svg"
 import logo3 from "../../assets/logo3.svg";
+import addad from "../../assets/addad.png";
+import log from "../../assets/log.png"
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -13,14 +15,14 @@ const Home: React.FC = () => {
     { title: "קנפוג פורטים", logo: siv_icon, link: "/change-vlan", active: true },
     { title: "ניהול משתמשים", logo: users_icon, link: "/manage-users", active: true },
     { title: "הוספת אדמין לעמדה", logo: king_icon, link: "/add-admin", active: true },
-    { title: "ניהול מכונות", logo: logo3, link: "/manage-vms", active: true },
-    { title: "AD הוספה לקבוצת", logo: logo3, link: "/groups", active: true },
+    { title: "AD הוספה לקבוצת", logo: addad, link: "/groups", active: true },
     { title: "יצירת משתמש", logo: logo3, link: "/create-user", active: true },
-    { title: "ter mon הפעלת", logo: logo3, link: "/ter-mon", active: true },
+    { title: "ter mon הפעלת", logo: log, link: "/ter-mon", active: true },
   ];
 
   // Add "Coming Soon" blocks to fill the grid
   const comingSoonBlocks = [
+    { title: "Coming soon...", logo: "", link: "", active: false },
     { title: "Coming soon...", logo: "", link: "", active: false },
     { title: "Coming soon...", logo: "", link: "", active: false },
     { title: "Coming soon...", logo: "", link: "", active: false },

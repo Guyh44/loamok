@@ -199,13 +199,10 @@ class AddToADGroup(Resource):
             return jsonify(result)
 
         except ValueError as ve:
-            # Input validation errors
             return {"status": "error", "message": str(ve)}, 400
         except RuntimeError as re:
-            # PowerShell / AD errors
             return {"status": "error", "message": str(re)}, 500
         except Exception as e:
-            # Catch-all for unexpected errors
             return {"status": "error", "message": f"Unexpected error: {str(e)}"}, 500
 
 
