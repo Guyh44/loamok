@@ -1,17 +1,15 @@
 import "./GenericPage.css";
-import { useState } from "react";
 
 interface GenericPageProps {
   title?: string;
   children?: React.ReactNode;
+  containerClassName?: string; // Add this prop
 }
 
-const GenericPage: React.FC<GenericPageProps> = ({ children }) => {
-
-
+const GenericPage: React.FC<GenericPageProps> = ({ children, containerClassName }) => {
   return (
     <div className="generic-page">
-      <div id="generic-container">
+      <div id="generic-container" className={containerClassName}>
         {children}
       </div>
     </div>

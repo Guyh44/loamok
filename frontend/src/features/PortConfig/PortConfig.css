@@ -1,27 +1,16 @@
-/* Animation for the GenericPage container - specific to PortConfig */
-#generic-container.port-config-slide-right {
-  transform: translateX(calc(50% + 15px));
-  transition: transform 0.6s ease-in-out;
-  animation: none !important; /* Disable slideInUp when sliding right */
-}
-
-/* Disable the default slideInUp animation when PortConfig is active */
-#generic-container.port-config-active {
-  animation: none !important;
-}
-
-/* Main wrapper for both containers */ 
+/* Main wrapper for interface status container only */ 
 .port-config-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  width: 100%;
-  overflow-x: visible;
-  position: relative;
-  animation: none !important; /* Prevent any inherited animations */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Interface Status Container */
+/* Interface Status Container - starts in center, slides left */
 .interface-status-container {
   background: linear-gradient(145deg, #2a2a2a 0%, #1a1a2e 50%, #16213e 100%);
   border-radius: 20px;
@@ -30,45 +19,37 @@
   height: 700px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  position: fixed;
-  top: 50%; /* Centered vertically */
-  left: calc(50% - 615px); /* Position it to the left of center with gap */
-  transform: translateY(-50%) !important; /* Force only vertical centering */
+  position: absolute;
+  top: 50%;
+  left: 50%;
   direction: rtl;
   text-align: right;
   display: flex;
   flex-direction: column;
+  pointer-events: all;
   z-index: 1;
   
-  /* Prevent ANY animations from parent elements */
-  animation: none !important;
-  
-  /* Start invisible */
+  /* Initially hidden in the center */
   opacity: 0;
-  pointer-events: none;
+  transform: translateY(-22%) translateX(-50%) scale(1);
   visibility: hidden;
   
-  /* Only fade in/out, no position changes */
   transition: 
     opacity 0.6s ease-in-out,
-    visibility 0s linear 0.6s,
-    transform 0s !important; /* Prevent transform transitions */
+    transform 0.6s ease-in-out,
+    visibility 0s linear 0.6s;
 }
 
 .interface-status-container.show {
   opacity: 1;
-  pointer-events: all;
+  /* Slide to the left side */
+  transform: translateY(-22%) translateX(calc(-50% - 315px)) scale(1);
   visibility: visible;
   
-  /* Force no transform changes */
-  transform: translateY(-50%) !important;
-  animation: none !important;
-  
-  /* Only fade in, no transform or position changes */
   transition: 
     opacity 0.6s ease-in-out,
-    visibility 0s linear 0s,
-    transform 0s !important;
+    transform 0.6s ease-in-out,
+    visibility 0s linear 0s;
 }
 
 .interface-status-header {
@@ -136,11 +117,10 @@
   text-align: left;
 }
 
-/* Main Port Config Container - No animation needed */
-.port-config-container-wrapper {
-  position: relative;
-  z-index: 2;
-  /* Removed slideInUp animation since parent generic-container handles it */
+/* GenericPage container sliding - this moves the entire background container */
+#generic-container.slide-right-container {
+  transform: translateX(315px);
+  transition: transform 0.6s ease-in-out;
 }
 
 /* Spinner positioning for config rows */
@@ -213,25 +193,15 @@
   .interface-status-container {
     position: relative;
     left: auto;
-    top: auto;
-    transform: none !important; /* Force remove all transforms */
-    animation: none !important; /* No animations */
+    transform: translateX(0) translateY(-50px);
     width: 100%;
     max-width: 600px;
     margin-bottom: 20px;
   }
   .interface-status-container.show {
-    transform: none !important; /* Keep no transform when shown */
-    animation: none !important;
+    transform: translateX(0) translateY(0);
   }
-  .port-config-container-wrapper {
-    width: 100%;
-    max-width: 600px;
-  }
-  /* Disable sliding animation on smaller screens */
-  #generic-container.port-config-slide-right {
+  #generic-container.slide-right-container {
     transform: translateX(0);
   }
 }
-
-/* Removed unused .port-config class with slide-in-left animation */
