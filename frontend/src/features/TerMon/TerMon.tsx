@@ -73,6 +73,9 @@ const TerMon: React.FC = () => {
 
     return (
         <GenericPage>
+            <h3 className="page-header">
+                הקפצת נקודות
+            </h3>
             {/* Switch selection */}
             <div className="config-row">
                 <label>בחר SWITCH:</label>
@@ -114,13 +117,16 @@ const TerMon: React.FC = () => {
             </div>
 
             {/* Logs display */}
-            <div className="terminal-output">
+            { selectedSwitch &&
+                <div className="terminal-output">
                 {logs.map((line, i) => (
                     <div key={i}>
                         {formatLogLine(line)}
                     </div>
                 ))}
             </div>
+            }
+            
         </GenericPage>
     );
 };

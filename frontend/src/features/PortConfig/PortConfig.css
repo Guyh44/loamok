@@ -16,11 +16,11 @@
   border-radius: 20px;
   box-shadow: 0 15px 35px rgba(22, 33, 62, 0.4), 0 5px 15px rgba(0, 0, 0, 0.2);
   width: 640px;
-  height: 446px;
+  height: 454px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   position: absolute;
-  top: 40.5vh;
+  top: 40.2vh;
   left:  49%;
   direction: rtl;
   text-align: right;
@@ -145,8 +145,7 @@
 /* Extra Buttons inside PortConfig */
 .extra-buttons {
   display: flex;
-  gap: 15px;
-  margin-bottom: 15px;
+  gap: 10px;
   position: relative;
 }
 
@@ -167,6 +166,7 @@
 
 .send-button-wrapper {
   position: relative;
+  margin-top: -10px;
 }
 
 .send-button-wrapper .spinner-button-left {

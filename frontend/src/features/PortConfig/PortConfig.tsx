@@ -194,6 +194,9 @@ const PortConfig: React.FC = () => {
         title="Port Configuration"
         containerClassName={showInterfaceStatus ? "slide-right-container" : ""}
       >
+        <h3 className="page-header">
+            קנפוג פורטים במתג
+        </h3>
         <SelectBox
           id="switch"
           label="בחר SWITCH:"
