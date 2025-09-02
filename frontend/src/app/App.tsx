@@ -6,6 +6,7 @@ import PortConfig from "../features/PortConfig/PortConfig.tsx";
 import LocalAdmin from "../features/LocalAdmin/LocalAdmin.tsx";
 import TerMon from "../features/TerMon/TerMon.tsx";
 import AdGroup from "../features/AdGroup/AdGroup.tsx"
+import CreateUser from "../features/CreateUser/CreateUser.tsx";
 import "../App.css";
 
 const App: React.FC = () => {
@@ -19,7 +20,7 @@ const App: React.FC = () => {
         <Route path="/change-vlan" element={<PortConfig/>} />
         <Route path="/manage-vms" element={<GenericPage/>} />
         <Route path="/groups" element={<AdGroup/>} />
-        <Route path="/create-user" element={<GenericPage/>} />
+        <Route path="/create-user" element={<CreateUser/>} />
         <Route path="/ter-mon" element={<TerMon/>} />
       </Routes>
     </>

@@ -1,33 +1,35 @@
 import subprocess
 
-# Get username from input
-username = input("Enter the new domain username: ")
-
-# Password
-password = "Aa123456"
-
 # Groups to add user to
-groups = ["hz_users"] 
+GROUPS = ["hz_users"]
+PASSWORD = "Aa123456"
 
-try:
-    # 1. Create domain user
-    subprocess.run(
-        ["net", "user", username, password, "/add", "/domain", "/logonpasswordchg:yes"],
-        check=True,
-        shell=True
-    )
-    print(f"Domain user '{username}' created.")
-
-    # 2. Add user to groups
-    for group in groups:
+def CreateDomainUser(username: str):
+    """
+    Creates a domain user with a fixed password, forces password change at first logon,
+    and adds the user to specified groups.
+    """
+    try:
+        # 1. Create the domain user
         subprocess.run(
-            ["net", "group", group, username, "/add", "/domain"],
+            ["net", "user", username, PASSWORD, "/add", "/domain", "/logonpasswordchg:yes"],
             check=True,
             shell=True
         )
-        print(f"Added '{username}' to group '{group}'.")
 
-    print(f"User '{username}' is ready and will be prompted to change password at first logon.")
+        # 2. Add user to custom groups
+        for group in GROUPS:
+            subprocess.run(
+                ["net", "group", group, username, "/add", "/domain"],
+                check=True,
+                shell=True
+            )
 
-except subprocess.CalledProcessError as e:
-    print(f"Error: {e}")
+        return {
+            "message": f"Domain user '{username}' created and added to groups {GROUPS}.",
+            "password": PASSWORD,
+            "note": "User will be prompted to change password at first logon."
+        }
+
+    except subprocess.CalledProcessError as e:
+        return {"error": str(e)}
