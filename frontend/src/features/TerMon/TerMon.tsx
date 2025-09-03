@@ -117,16 +117,15 @@ const TerMon: React.FC = () => {
             </div>
 
             {/* Logs display */}
-            { selectedSwitch &&
+            { selectedSwitch && (
                 <div className="terminal-output">
-                {logs.map((line, i) => (
-                    <div key={i}>
-                        {formatLogLine(line)}
-                    </div>
-                ))}
-            </div>
-            }
-            
+                    {logs.map((line, i) => (
+                        <div key={i}>
+                            {formatLogLine(line)}
+                        </div>
+                    ))}
+                </div>
+            )}
         </GenericPage>
     );
 };
