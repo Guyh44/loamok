@@ -9,6 +9,7 @@ import type { VlanDropdownOption } from "./getVlan";
 import Spinner from "../../components/Spinner";
 import SelectBox from "../../components/SelectBox";
 
+
 const PortConfig: React.FC = () => {
   const [selectedSwitch, setSelectedSwitch] = useState<string>("");
   const [selectedPort, setSelectedPort] = useState<string>("");
