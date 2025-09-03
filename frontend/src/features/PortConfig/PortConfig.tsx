@@ -170,57 +170,11 @@ const PortConfig: React.FC = () => {
     fetchData();
   }, [selectedSwitch, showInterfaceStatus]);
 
-  // Disable GenericPage animation on mount
-  useEffect(() => {
-    const genericContainer = document.getElementById('generic-container');
-    if (genericContainer) {
-      genericContainer.classList.add('port-config-active');
-    }
-    return () => {
-      const genericContainer = document.getElementById('generic-container');
-      if (genericContainer) {
-        genericContainer.classList.remove('port-config-active');
-      }
-    };
-  }, []);
-
-  // Add effect to manage the CSS class on the generic container
-  useEffect(() => {
-    const genericContainer = document.getElementById('generic-container');
-    if (genericContainer) {
-      // Add a class to indicate we're in PortConfig to control animations
-      genericContainer.classList.add('port-config-active');
-      
-      if (showInterfaceStatus) {
-        genericContainer.classList.add('port-config-slide-right');
-      } else {
-        genericContainer.classList.remove('port-config-slide-right');
-      }
-    }
-
-    // Cleanup when component unmounts
-    return () => {
-      const genericContainer = document.getElementById('generic-container');
-      if (genericContainer) {
-        genericContainer.classList.remove('port-config-slide-right');
-        genericContainer.classList.remove('port-config-active');
-      }
-    };
-  }, [showInterfaceStatus]);
-
   return (
-    <GenericPage title="Port Configuration">
-      <div className="port-config-wrapper" style={{ animation: 'none' }}>
-        {/* Interface Status Container */}
-        <div 
-          className={`interface-status-container ${showInterfaceStatus ? "show" : ""}`}
-          style={{
-            // Force the container to stay in its fixed position
-            left: 'calc(50% - 615px)',
-            transform: 'translateY(-50%)',
-            animation: 'none'
-          }}
-        >
+    <>
+      {/* Status panel is now a sibling, so it can sit behind GenericPage */}
+      <div className="port-config-wrapper">
+        <div className={`interface-status-container ${showInterfaceStatus ? "show" : ""}`}>
           <div className="interface-status-header">
             <h3>Interface Status - {selectedSwitch}</h3>
             {loadingInterfaceStatus && (
@@ -233,84 +187,88 @@ const PortConfig: React.FC = () => {
             <pre>{interfaceStatus}</pre>
           </div>
         </div>
+      </div>
 
-        {/* Main Config - Now the generic container will slide */}
-        <div className="port-config-container-wrapper">
+      {/* GenericPage stays above it */}
+      <GenericPage
+        title="Port Configuration"
+        containerClassName={showInterfaceStatus ? "slide-right-container" : ""}
+      >
+        <h3 className="page-header">
+            קנפוג פורטים במתג
+        </h3>
+        <SelectBox
+          id="switch"
+          label="בחר SWITCH:"
+          value={selectedSwitch}
+          onChange={setSelectedSwitch}
+          options={switchOptions.map((option: IPDropdownOption) => ({
+            value: option.ip,
+            label: `${option.ricuz} : ${option.ip}`,
+          }))}
+        />
+
+        <div className="config-row-with-spinner">
           <SelectBox
-            id="switch"
-            label="בחר SWITCH:"
-            value={selectedSwitch}
-            onChange={setSelectedSwitch}
-            options={switchOptions.map((option: IPDropdownOption) => ({
-              value: option.ip,
-              label: `${option.ricuz} : ${option.ip}`,
-            }))}
+            id="port"
+            label="בחר PORT:"
+            value={selectedPort}
+            onChange={setSelectedPort}
+            options={ports}
           />
-
-          <div className="config-row-with-spinner">
-            <SelectBox
-              id="port"
-              label="בחר PORT:"
-              value={selectedPort}
-              onChange={setSelectedPort}
-              options={ports}
-            />
-            {loadingPorts && (
-              <div className="spinner-inline">
-                <Spinner isLoading={true} size={25} />
-              </div>
-            )}
-          </div>
-
-          <div className="config-row-with-spinner">
-            <SelectBox
-              id="vlan"
-              label="בחר VLAN:"
-              value={selectedVlan}
-              onChange={setSelectedVlan}
-              options={vlanOptions}
-            />
-            {loadingVlans && (
-              <div className="spinner-inline">
-                <Spinner isLoading={true} size={25} />
-              </div>
-            )}
-          </div>
-
-          <div className="actions-wrapper">
-            {selectedPort && (
-              <div className="extra-buttons">
-                <button onClick={() => sendCommand("shut")} disabled={!selectedSwitch || !selectedPort || loadingShutCommand}>
-                  shut
-                </button>
-                <button onClick={() => sendCommand("no-shut")} disabled={!selectedSwitch || !selectedPort || loadingShutCommand}>
-                  no shut
-                </button>
-                {loadingShutCommand && (
-                  <div className="spinner-button-left">
-                    <Spinner isLoading={true} size={25} />
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="send-button-wrapper">
-              <button
-                onClick={handleSubmit}
-                disabled={loadingSendCommand || !selectedSwitch || !selectedPort || !selectedVlan}
-              >
-                שלח
-              </button>
-              {loadingSendCommand && (
-                <div className="spinner-button-left">
-                  <Spinner isLoading={true} size={25} />
-                </div>
-              )}
+          {loadingPorts && (
+            <div className="spinner-inline">
+              <Spinner isLoading={true} size={25} />
             </div>
+          )}
+        </div>
+
+        <div className="config-row-with-spinner">
+          <SelectBox
+            id="vlan"
+            label="בחר VLAN:"
+            value={selectedVlan}
+            onChange={setSelectedVlan}
+            options={vlanOptions}
+          />
+          {loadingVlans && (
+            <div className="spinner-inline">
+              <Spinner isLoading={true} size={25} />
+            </div>
+          )}
+        </div>
+
+        <div className="actions-wrapper">
+          <div className="extra-buttons">
+            <button onClick={() => sendCommand("shut")} disabled={!selectedSwitch || !selectedPort || loadingShutCommand}>
+              shut
+            </button>
+            <button onClick={() => sendCommand("no-shut")} disabled={!selectedSwitch || !selectedPort || loadingShutCommand}>
+              no shut
+            </button>
+            {loadingShutCommand && (
+              <div className="spinner-button-left">
+                <Spinner isLoading={true} size={25} />
+              </div>
+            )}
+          </div>
+
+          <div className="send-button-wrapper">
+            <button
+              onClick={handleSubmit}
+              disabled={loadingSendCommand || !selectedSwitch || !selectedPort || !selectedVlan}
+            >
+              שלח
+            </button>
+            {loadingSendCommand && (
+              <div className="spinner-button-left">
+                <Spinner isLoading={true} size={25} />
+              </div>
+            )}
           </div>
         </div>
-      </div>
-    </GenericPage>
+      </GenericPage>
+    </>
   );
 };
 

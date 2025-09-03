@@ -73,6 +73,9 @@ const TerMon: React.FC = () => {
 
     return (
         <GenericPage>
+            <h3 className="page-header">
+                הקפצת נקודות
+            </h3>
             {/* Switch selection */}
             <div className="config-row">
                 <label>בחר SWITCH:</label>

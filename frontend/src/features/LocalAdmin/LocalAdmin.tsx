@@ -106,50 +106,53 @@ const LocalAdmin: React.FC = () => {
 
     return (
         <GenericPage>
-                {/* Username input */}
-                <div className="config-row">
-                    <label>בחר משתמש:</label>
-                    <input 
-                        type="text" 
-                        placeholder="Enter Username"
-                        value={selectedUser}
-                        onChange={(e) => setSelectedUser(e.target.value)}
-                    />
-                </div>
+            <h3 className="page-header">
+                הוספת אדמין לעמדה
+            </h3>
+            {/* Username input */}
+            <div className="config-row">
+                <label>בחר משתמש:</label>
+                <input 
+                    type="text" 
+                    placeholder="Enter Username"
+                    value={selectedUser}
+                    onChange={(e) => setSelectedUser(e.target.value)}
+                />
+            </div>
 
-                {/* Computer name input */}
-                <div className="config-row">
-                    <label>בחר מחשב:</label>
-                    <input 
-                        type="text" 
-                        placeholder="Enter Computer Name"
-                        value={selectedComputer}
-                        onChange={(e) => setSelectedComputer(e.target.value)}
-                    />
+            {/* Computer name input */}
+            <div className="config-row">
+                <label>בחר מחשב:</label>
+                <input 
+                    type="text" 
+                    placeholder="Enter Computer Name"
+                    value={selectedComputer}
+                    onChange={(e) => setSelectedComputer(e.target.value)}
+                />
+            </div>
+            
+            <div className="actions-wrapper">
+                <div className="send-button-wrapper">
+                    <button 
+                        onClick={handleSubmit} 
+                        disabled={loadingSendCommand || !selectedUser || !selectedComputer}
+                    > 
+                        שלח 
+                    </button>
+                    {loadingSendCommand && (
+                        <div className="spinner-button-left">
+                            <Spinner isLoading={true} size={25} />
+                        </div>
+                    )}
                 </div>
-                
-                <div className="actions-wrapper">
-                    <div className="send-button-wrapper">
-                        <button 
-                            onClick={handleSubmit} 
-                            disabled={loadingSendCommand || !selectedUser || !selectedComputer}
-                        > 
-                            שלח 
-                        </button>
-                        {loadingSendCommand && (
-                            <div className="spinner-button-left">
-                                <Spinner isLoading={true} size={25} />
-                            </div>
-                        )}
-                    </div>
-                </div>
+            </div>
 
-                {/* Status Message */}
-                {statusMessage && (
-                    <div className={`status-message ${statusMessage.type}`}>
-                        {statusMessage.message}
-                    </div>
-                )}
+            {/* Status Message */}
+            {statusMessage && (
+                <div className={`status-message ${statusMessage.type}`}>
+                    {statusMessage.message}
+                </div>
+            )}
         </GenericPage>
     );
 };

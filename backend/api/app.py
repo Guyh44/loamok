@@ -12,6 +12,7 @@ from application.use_cases.ad_group import add_user_to_group
 from application.use_cases.shut_no_shut import PortState
 from application.use_cases.local_admin import LocalAdmin
 from application.use_cases.ter_mon import TerMonUseCase
+from application.use_cases.create_user import CreateDomainUser
 from domain.entities.user import User
 from domain.entities.computer import Computer
 
@@ -41,7 +42,11 @@ local_admin_model = api.model("LocalAdmin", {
     "username": fields.String(required=True, description="Domain username (without domain, e.g., c_123)")
 })
 
-group_model = api.model("ADDTOGROUP", {
+user_model = api.model("User", {
+    "username": fields.String(required=True, description="Username to add to AD")
+})
+
+group_model = api.model("AddToGroup", {
     "username": fields.String(required=True, description="Username to add to AD group"),
     "groupname": fields.String(required=True, description="AD group to add the user to")
 })
@@ -180,9 +185,7 @@ class AddLocalAdmin(Resource):
         result = admin_service.add_user_to_admins(user_entity, computer_entity)
 
         return {"result": result}, 200
-#
-# Supposed to work but must be checked on momo
-#
+
 @user_ns.route("/add-to-group")
 class AddToADGroup(Resource):
     @user_ns.expect(group_model)
@@ -199,15 +202,24 @@ class AddToADGroup(Resource):
             return jsonify(result)
 
         except ValueError as ve:
-            # Input validation errors
             return {"status": "error", "message": str(ve)}, 400
         except RuntimeError as re:
-            # PowerShell / AD errors
             return {"status": "error", "message": str(re)}, 500
         except Exception as e:
-            # Catch-all for unexpected errors
             return {"status": "error", "message": f"Unexpected error: {str(e)}"}, 500
 
+@user_ns.route("/create-user")
+class CreateUser(Resource):
+    @user_ns.expect(user_model)
+    def post(self):
+        data = request.get_json()
+        username = data.get("username")
+        if not username:
+            return {"error": "Username is required"}, 400
+        result = CreateDomainUser(username)
+        if "error" in result:
+            return result, 500
+        return result, 201
 
 @app.route("/api/pages/<page_id>", methods=["GET"])
 def get_page(page_id):
