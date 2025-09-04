@@ -1,0 +1,79 @@
+.terminal-output {
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    /* background and borders */
+    background: linear-gradient(145deg, #0d0d0d, #1a1a1a);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+
+    /* text */
+    color: #ffffff;
+    font-family: "Fira Code", "Consolas", "monospace";
+    font-size: 14px;
+    line-height: 1.4;
+
+    /* spacing */
+    padding: 15px;
+
+    /* glow effect */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.137);
+
+    direction: ltr;
+    text-align: left;
+}
+
+/* scrollbar styling */
+.terminal-output::-webkit-scrollbar {
+    width: 6px;
+}
+.terminal-output::-webkit-scrollbar-thumb {
+    background: rgba(100, 100, 100, 0.5);
+    border-radius: 6px;
+}
+.terminal-output::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Log line styling */
+.log-line {
+    margin-bottom: 2px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+}
+
+/* Interface up styling */
+.interface-up {
+    color: #57e5f5 !important;
+    background: rgba(0, 204, 255, 0.05);
+    border-left: 3px solid #57e5f5;
+    padding-left: 8px;
+}
+
+/* Interface down styling */  
+.interface-down {
+    color: #ff4444 !important;
+    background: rgba(255, 68, 68, 0.05);
+    border-left: 3px solid #ff4444;
+    padding-left: 8px;
+}
+
+/* Hover effects */
+.interface-up:hover {
+    background: rgba(0, 204, 255, 0.233);
+    box-shadow: 0 2px 4px rgba(0, 217, 255, 0.5);
+}
+
+.interface-down:hover {
+    background: rgba(255, 68, 68, 0.1);
+    box-shadow: 0 2px 4px rgba(255, 68, 68, 0.2);
+}
+
+.spinner-netx-to-start {
+  position: absolute;
+  left: -50px;
+  top: 30%;
+  transform: translateY(-50%);
+  z-index: 10;
+}

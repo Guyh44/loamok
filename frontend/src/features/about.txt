@@ -1,0 +1,2 @@
+Features are the full page files. 
+for example home.tsx is here and it uses components from /components.

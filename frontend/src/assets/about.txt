@@ -1,0 +1,1 @@
+Static files like images, icons, and fonts. Used by components or features but not part of business logic.

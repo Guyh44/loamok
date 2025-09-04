@@ -1,0 +1,2 @@
+Handles API calls, storage, utilities, and external services. It’s the bridge between the app and external systems.
+Communication to the backend happens through here.
