@@ -12,7 +12,7 @@ from application.use_cases.ad_group import add_user_to_group
 from application.use_cases.shut_no_shut import PortState
 from application.use_cases.local_admin import LocalAdmin
 from application.use_cases.ter_mon import TerMonUseCase
-from application.use_cases.create_user import CreateDomainUser
+from application.use_cases.create_user import CreateDomainUser, test_domain_connection, check_privileges
 from domain.entities.user import User
 from domain.entities.computer import Computer
 
@@ -212,14 +212,36 @@ class AddToADGroup(Resource):
 class CreateUser(Resource):
     @user_ns.expect(user_model)
     def post(self):
-        data = request.get_json()
-        username = data.get("username")
-        if not username:
-            return {"error": "Username is required"}, 400
-        result = CreateDomainUser(username)
-        if "error" in result:
-            return result, 500
-        return result, 201
+        try:
+            data = request.get_json()
+            username = data.get("username")
+            if not username:
+                return {"error": "[-] Username is required"}, 400            
+            # Validate username format (basic validation)
+            if not username.replace('_', '').replace('-', '').isalnum():
+                return {"error": "[-] Username contains invalid characters"}, 400                
+            if len(username) > 20:
+                return {"error": "[-] Username too long (max 20 characters)"}, 400     
+            # Optional: Test domain connection before attempting user creation       
+            # Check privileges
+            priv_ok, priv_msg = check_privileges()
+            if not priv_ok:
+                return {"error": f"[-] {priv_msg}"}, 403         
+            # Check domain connection
+            domain_ok, domain_msg = test_domain_connection()
+            if not domain_ok:
+                return {"error": f"[-] {domain_msg}"}, 503
+            
+            # Attempt to create the user
+            result = CreateDomainUser(username)
+            
+            if "error" in result:
+                return {"error": result["error"]}, 500
+            
+            return {"result": result["message"], "details": result}, 201
+            
+        except Exception as e:
+            return {"error": f"[-] Unexpected server error: {str(e)}"}, 500
 
 @app.route("/api/pages/<page_id>", methods=["GET"])
 def get_page(page_id):
