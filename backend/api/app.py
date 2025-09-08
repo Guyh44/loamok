@@ -13,6 +13,7 @@ from application.use_cases.shut_no_shut import PortState
 from application.use_cases.local_admin import LocalAdmin
 from application.use_cases.ter_mon import TerMonUseCase
 from application.use_cases.create_user import CreateDomainUser, test_domain_connection, check_privileges
+from application.use_cases.manage_user import manage_user
 from domain.entities.user import User
 from domain.entities.computer import Computer
 
@@ -49,6 +50,11 @@ user_model = api.model("User", {
 group_model = api.model("AddToGroup", {
     "username": fields.String(required=True, description="Username to add to AD group"),
     "groupname": fields.String(required=True, description="AD group to add the user to")
+})
+
+user_action_model = api.model("UserAction", {
+    "username": fields.String(required=True, description="The domain username"),
+    "action": fields.String(required=True, description="Action to perform: unlock, reset_password, disable, enable, info")
 })
 
 # --- Initialize Password and SSH Service ---
@@ -243,6 +249,30 @@ class CreateUser(Resource):
         except Exception as e:
             return {"error": f"[-] Unexpected server error: {str(e)}"}, 500
 
+@user_ns.route("/manage-user")
+class ManageUserEndpoint(Resource):
+    @user_ns.expect(user_action_model)
+    def post(self):
+        data = request.get_json()
+        username = data.get("username")
+        action = data.get("action")
+
+        if not username or not action:
+            return {"error": "Username and action are required"}, 400
+
+        result = manage_user(username, action)
+
+        if result.get("success"):
+            response = {"message": f"הפעולה '{action}' על: {username} הסתיימה בהצלחה"}
+            
+            # Include the output only for "info" action
+            if action == "info":
+                response["info_output"] = result.get("output")
+            
+            return response, 200
+        else:
+            return {"error": result.get("error")}, 500
+        
 @app.route("/api/pages/<page_id>", methods=["GET"])
 def get_page(page_id):
     # Temporary static page data
