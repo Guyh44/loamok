@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import GenericPage from "../../app/GenericPage";
 import "../AdGroup/AdGroup.css";
+import { groups } from "../../data/ADgroup";
 
 const AddToADGroup: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -51,12 +52,17 @@ const AddToADGroup: React.FC = () => {
 
       <div className="config-row">
         <label>בחר קבוצה:</label>
-        <input
-          type="text"
-          placeholder="Enter AD Group"
+        <select
           value={groupname}
           onChange={(e) => setGroupname(e.target.value)}
-        />
+        >
+          <option value="">-- בחר קבוצה --</option>
+          {groups.map((g, idx) => (
+            <option key={idx} value={g.group}>
+              {g.group}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="actions-wrapper">

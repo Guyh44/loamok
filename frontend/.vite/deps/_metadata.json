@@ -1,8 +1,61 @@
 {
-  "hash": "df796737",
+  "hash": "4020743c",
   "configHash": "7b43a756",
-  "lockfileHash": "dd0755f8",
-  "browserHash": "e69a7f2e",
-  "optimized": {},
-  "chunks": {}
+  "lockfileHash": "4ecb05f7",
+  "browserHash": "02bed0f0",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "ad460f5a",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "15409ad7",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "c7ebe914",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "246d3d43",
+      "needsInterop": false
+    },
+    "react-spinners": {
+      "src": "../../node_modules/react-spinners/esm/index.js",
+      "file": "react-spinners.js",
+      "fileHash": "425b73ed",
+      "needsInterop": false
+    },
+    "axios": {
+      "src": "../../node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "a5b3831b",
+      "needsInterop": false
+    },
+    "react-select": {
+      "src": "../../../node_modules/react-select/dist/react-select.esm.js",
+      "file": "react-select.js",
+      "fileHash": "7bb11ad6",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-FYGYNQUM": {
+      "file": "chunk-FYGYNQUM.js"
+    },
+    "chunk-32EALFBN": {
+      "file": "chunk-32EALFBN.js"
+    },
+    "chunk-G3PMV62Z": {
+      "file": "chunk-G3PMV62Z.js"
+    }
+  }
 }
