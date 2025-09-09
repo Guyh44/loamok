@@ -7,6 +7,7 @@ import LocalAdmin from "../features/LocalAdmin/LocalAdmin.tsx";
 import TerMon from "../features/TerMon/TerMon.tsx";
 import AdGroup from "../features/AdGroup/AdGroup.tsx"
 import CreateUser from "../features/CreateUser/CreateUser.tsx";
+import ManageUser from "../features/ManageUser/ManageUser.tsx";
 import "../App.css";
 
 const App: React.FC = () => {
@@ -16,7 +17,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/add-admin" element={<LocalAdmin/>} />
-        <Route path="/manage-users" element={<GenericPage/>} />
+        <Route path="/manage-users" element={<ManageUser/>} />
         <Route path="/change-vlan" element={<PortConfig/>} />
         <Route path="/manage-vms" element={<GenericPage/>} />
         <Route path="/groups" element={<AdGroup/>} />

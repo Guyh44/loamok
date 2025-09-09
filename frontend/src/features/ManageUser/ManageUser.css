@@ -1,0 +1,4 @@
+.status-message {
+  white-space: pre-line; /* This makes \n show as line breaks */
+  line-height: 1.6;
+}
