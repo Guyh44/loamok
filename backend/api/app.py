@@ -267,7 +267,7 @@ class ManageUserEndpoint(Resource):
             
             # Include the output only for "info" action
             if action == "info":
-                response["info_output"] = result.get("output")
+                response["info"] = result.get("parsed_info")
             
             return response, 200
         else:

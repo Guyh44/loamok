@@ -38,8 +38,13 @@ const UserManager: React.FC = () => {
         }
 
         // If action is info, append the info output
-      if (action === "info" && data.info_output) {
-        message += "\n\n" + data.info_output;
+      if (action === "info" && data.info) {
+        const { groups, last_logon, password_expires } = data.info;
+
+        message += "\n\n";
+        message += `Last Logon: ${last_logon || "Unknown"}\n`;
+        message += `Password Expires: ${password_expires || "Unknown"}\n`;
+        message += `Groups: ${groups && groups.length > 0 ? groups.join(", ") : "None"}`;
       }
 
         setStatusMessage({ type: 'success', message });
@@ -67,10 +72,15 @@ const UserManager: React.FC = () => {
       </div>
 
       <div className="actions-wrapper">
-        <button onClick={() => handleAction("disable")} disabled={loading}>Disable</button>
-        <button onClick={() => handleAction("enable")} disabled={loading}>Enable</button>
-        <button onClick={() => handleAction("reset_password")} disabled={loading}>Reset Password</button>
-        <button onClick={() => handleAction("info")} disabled={loading}>User Info</button>
+        <div className="extra-buttons">
+            <button onClick={() => handleAction("disable")} disabled={loading}>Disable</button>
+            <button onClick={() => handleAction("enable")} disabled={loading}>Enable</button>
+        </div>
+        <div className="extra-buttons">
+            <button onClick={() => handleAction("reset_password")} disabled={loading}>Reset Password</button>
+            <button onClick={() => handleAction("info")} disabled={loading}>User Info</button>
+        </div>
+
       </div>
 
       {statusMessage && (
