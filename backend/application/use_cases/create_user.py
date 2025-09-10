@@ -5,10 +5,17 @@ import sys
 GROUPS = ["hz_users"]
 PASSWORD = "Aa123456"
 
+import subprocess
+import sys
+
+# Groups to add user to
+GROUPS = ["hz_users"]
+PASSWORD = "Aa123456"
+
 def CreateDomainUser(username: str):
     """
     Creates a domain user with a fixed password, forces password change at first logon,
-    and adds the user to specified groups.
+    adds the user to specified groups, and sets up their OWL directory with permissions.
     """
     try:
         # 1. Create the domain user
@@ -16,7 +23,6 @@ def CreateDomainUser(username: str):
         result = subprocess.run(
             ["net", "user", username, PASSWORD, "/add", "/domain", "/logonpasswordchg:yes"],
             check=True,
-            shell=True,
             capture_output=True,
             text=True
         )
@@ -26,51 +32,51 @@ def CreateDomainUser(username: str):
         for group in GROUPS:
             print(f"[+] Adding user {username} to group: {group}")
             try:
-                group_result = subprocess.run(
+                subprocess.run(
                     ["net", "group", group, username, "/add", "/domain"],
                     check=True,
-                    shell=True,
                     capture_output=True,
                     text=True
                 )
             except subprocess.CalledProcessError as group_error:
                 print(f"[!] Warning: Failed to add user to group {group}: {group_error.stderr}")
-                # Don't fail the entire operation if group addition fails
+
+        # 3. Create OWL folder + set ACL using PowerShell
+        print(f"[+] Creating OWL folder for {username}")
+        ps_script = f'''
+            $path = "\\\\fileserver01\\owl\\{username}"
+            if (-not (Test-Path $path)) {{
+                New-Item -ItemType Directory -Path $path | Out-Null
+            }}
+            $Acl = Get-Acl $path
+            $Ar = New-Object System.Security.AccessControl.FileSystemAccessRule("{username}", "Modify", "ContainerInherit,ObjectInherit", "None", "Allow")
+            $Acl.SetAccessRule($Ar)
+            Set-Acl $path $Acl
+        '''
+        subprocess.run(
+            ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps_script],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        print(f"[+] OWL directory created and permissions applied for {username}")
 
         return {
             "message": f"[+] המשתמש '{username}' נוצר בהצלחה.",
             "password": PASSWORD,
             "note": "User will be prompted to change password at first logon.",
-            "groups": GROUPS
+            "groups": GROUPS,
+            "owl_dir": f"\\\\fileserver01\\owl\\{username}"
         }
 
     except subprocess.CalledProcessError as e:
-        error_message = ""
-        
-        # Get detailed error information
-        if e.stderr:
-            error_message = e.stderr.strip()
-        elif e.stdout:
-            error_message = e.stdout.strip()
-        
-        # Common error interpretations
-        if e.returncode == 2:
-            if "already exists" in error_message.lower():
-                detailed_error = f"[-] המשתמש '{username}' כבר קיים בדומיין"
-            elif "not found" in error_message.lower():
-                detailed_error = f"[-] Domain controller not found or machine not joined to domain"
-            elif "access is denied" in error_message.lower():
-                detailed_error = f"[-] גישה נדחתה - אין הרשאות ליצור משתמש דומייני נסו להריץ כמנהל"
-            else:
-                detailed_error = f"[-] נכשל ליצור משתמש דומייני: {error_message}"
-        else:
-            detailed_error = f"[-] בקשה נכשלה:  {e.returncode}: {error_message}"
-        
+        error_message = e.stderr.strip() if e.stderr else (e.stdout.strip() if e.stdout else "")
+        detailed_error = f"[-] בקשה נכשלה: {e.returncode}: {error_message}"
         return {"שגיאה": detailed_error}
     
     except Exception as e:
-        error_msg = f"[-] שגיאה לא צפוייה: {str(e)}"
-        return {"שגיאה": error_msg}
+        return {"שגיאה": f"[-] שגיאה לא צפוייה: {str(e)}"}
+
 
 def test_domain_connection():
     """
@@ -80,7 +86,6 @@ def test_domain_connection():
         result = subprocess.run(
             ["net", "user", "/domain"],
             check=True,
-            shell=True,
             capture_output=True,
             text=True,
             timeout=10
