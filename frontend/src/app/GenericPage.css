@@ -40,43 +40,141 @@
   flex-shrink: 0;
 }
 
-/* Shared select styles */
-.config-row select {
+/* ---------- Container ---------- */
+/* ---------- Container ---------- */
+.select-box-container {
+  width: 300px;
   margin-left: 15px;
-  padding: 12px 16px;
+}
+
+/* ---------- Control (main box) ---------- */
+.select-box__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* keep content centered */
+  min-height: 52px;
+  padding: 0 16px;
   border-radius: 12px;
   border: 2px solid rgba(255, 255, 255, 0.1);
   font-size: 1rem;
-  text-align: center;
-  background: rgba(156, 24, 24, 0.05);
   color: #e8e9f3;
+  cursor: pointer;
   transition: all 0.3s ease;
+  background: transparent;
+  overflow: hidden;
+}
+
+/* Background blur behind everything */
+.select-box__control::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: rgba(156, 24, 24, 0.05);
   backdrop-filter: blur(5px);
-  width: 300px;
-  flex-shrink: 0;
+  z-index: 0;
 }
 
-.config-row select:focus {
+/* Ensure text & input render above blur */
+.select-box__single-value,
+.select-box__placeholder,
+.select-box__input-container,
+.select-box__dropdown-indicator,
+.select-box__clear-indicator {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Placeholder & Single Value (same spot) ---------- */
+.select-box__placeholder,
+.select-box__single-value {
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Hide placeholder when focused or when value exists */
+.select-box__control--is-focused .select-box__placeholder,
+.select-box__has-value .select-box__placeholder {
+  display: none;
+}
+
+/* ---------- Input (shares same space) ---------- */
+.select-box__input-container {
+  flex: 1;
+  text-align: center;
+}
+
+.select-box__input-container input {
+  width: 100%;
+  background: transparent;
+  border: none;
   outline: none;
-  border-color: #4facfe;
-  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.config-row select option {
-  background: #2a2a3e;
   color: #e8e9f3;
-}
-.config-row select option:hover {
-  background: #2d1b69 !important;
-  color: #e0e0e0 !important;
-}
-.config-row select option:checked {
-  background: #2d1b69 !important;
-  color: #e0e0e0 !important;
+  caret-color: #4facfe;
+  text-align: center;
+  font-size: 1rem;
 }
 
-/* Buttons (shared) */
+/* ---------- Indicators ---------- */
+.select-box__dropdown-indicator,
+.select-box__clear-indicator {
+  color: #e8e9f3;
+  padding: 0 8px;
+}
+
+.select-box__dropdown-indicator svg,
+.select-box__clear-indicator svg {
+  fill: #e8e9f3;
+}
+
+/* ---------- Menu ---------- */
+.select-box__menu {
+  width: 100%;
+  margin-top: 4px;
+  border-radius: 12px;
+  background: #2a2a3e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.select-box__menu-list {
+  padding: 6px 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* ---------- Options ---------- */
+.select-box__option {
+  background: transparent;
+  color: #e8e9f3;
+  cursor: pointer;
+  padding: 10px 16px;
+  text-align: center;
+}
+
+.select-box__option--is-focused {
+  background: #2d1b69;
+  color: #e0e0e0;
+}
+
+.select-box__option--is-selected {
+  background: #2d1b69;
+  color: #e0e0e0;
+}
+
+
+
+/* Buttons */
 #generic-container button {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d1b69 50%, #1a1a1a 100%);
   color: #e0e0e0;
@@ -112,20 +210,13 @@
   opacity: 0.6;
 }
 
-/* Hover / focus effect */
-.select-box select:hover,
-.select-box select:focus {
-  border-color: #005fa3;
-  box-shadow: 0 0 5px rgba(0, 119, 204, 0.5);
-}
-
-.page-header{
-    position: relative;
-    background: linear-gradient(45deg, #ffffff, #57e5f5);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
-    z-index: 1;
-    margin-bottom: 2vh;
+.page-header {
+  position: relative;
+  background: linear-gradient(45deg, #ffffff, #57e5f5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+  z-index: 1;
+  margin-bottom: 2vh;
 }

@@ -1,5 +1,4 @@
-import React from "react";
-import "../app/GenericPage.css"; // make sure this path matches where your GenericPage.css is
+import React, { useState } from "react";
 import Select from "react-select";
 
 interface Option {
@@ -16,18 +15,33 @@ interface SelectBoxProps {
 }
 
 const SelectBox: React.FC<SelectBoxProps> = ({ id, label, value, options, onChange }) => {
-  // find the selected option object (react-select expects full object, not just value)
   const selectedOption = options.find((opt) => opt.value === value) || null;
+  const [optionPicked, setOptionPicked] = useState<Option | null>(null);
+  const customStyles = {
+    control: () => ({}),
+    menu: () => ({}),
+    option: () => ({}),
+    singleValue: () => ({}),
+    input: () => ({}),
+    placeholder: () => ({}),
+    indicatorSeparator: () => ({}),
+    dropdownIndicator: () => ({}),
+    clearIndicator: () => ({}),
+  };
 
   return (
     <div className="config-row">
       <label htmlFor={id}>{label}</label>
       <Select
-        inputId={id} // accessibility link for label
-        value={selectedOption}
         options={options}
-        onChange={(selected) => onChange(selected ? (selected as Option).value : "")}
+        className="select-box-container"
+        classNamePrefix="select-box"
+        onChange={(option) => setOptionPicked(option)}
         placeholder="-- Select --"
+        styles={customStyles}
+        /*components={{
+          IndicatorSeparator: () => null,
+        }}*/
       />
     </div>
   );
