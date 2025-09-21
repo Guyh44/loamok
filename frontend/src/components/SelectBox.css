@@ -1,0 +1,53 @@
+/* Main control box */
+.select-box__control {
+  background: linear-gradient(145deg, #1e1e2f, #23233a);
+  border: 1px solid #3a3a50;
+  border-radius: 12px;
+  min-height: 45px;
+  padding: 0 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.select-box__control:hover {
+  border-color: #ffffff;
+  box-shadow: 0 0 6px #5c5c5c;
+}
+
+/* Dropdown menu */
+.select-box__menu {
+  background: #1e1e2f !important;
+  border-radius: 12px;
+  border: 1px solid #3a3a50;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  z-index: 999;
+  color: #e4e4e4;
+}
+
+/* Options */
+.select-box__option {
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.select-box__option--is-focused {
+  background: #2a2a44;
+}
+
+.select-box__option--is-selected {
+  background: linear-gradient(145deg, #141629, #18447e);
+  color: white;
+}
+
+/* Placeholder text */
+.select-box__placeholder {
+  color: #e4e4e4;
+}
+
+/* Single value text */
+.select-box__single-value {
+  color: #e4e4e4;
+  font-weight: 500;
+}
