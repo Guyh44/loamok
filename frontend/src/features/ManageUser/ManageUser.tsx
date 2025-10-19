@@ -31,24 +31,28 @@ const UserManager: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Special message for reset_password
-        let message = data.message;
-        if (action === "reset_password") {
-          message = `הסיסמא של: "${username}" התאפסה בהצלחה.`;
+        let message = "";
+        
+        // For info action, don't show the success message, only the data
+        if (action === "info" && data.info) {
+          const { groups, last_logon, password_expires } = data.info;
+
+          message += `Last Logon: ${last_logon || "Unknown"}\n`;
+          message += `Password Expires: ${password_expires || "Unknown"}\n`;
+          message += `Groups: ${groups && groups.length > 0 ? groups.join(", ") : "None"}`;
+        } else {
+          // For other actions, show the message
+          message = data.message;
+          
+          // Special message for reset_password
+          if (action === "reset_password") {
+            message = `הסיסמא של: "${username}" התאפסה בהצלחה.`;
+          }
         }
-
-        // If action is info, append the info output
-      if (action === "info" && data.info) {
-        const { groups, last_logon, password_expires } = data.info;
-
-        message += "\n\n";
-        message += `Last Logon: ${last_logon || "Unknown"}\n`;
-        message += `Password Expires: ${password_expires || "Unknown"}\n`;
-        message += `Groups: ${groups && groups.length > 0 ? groups.join(", ") : "None"}`;
-      }
 
         setStatusMessage({ type: 'success', message });
       } else {
+        // Always display error messages for all actions
         setStatusMessage({ type: 'error', message: data.error || `Failed: ${response.status}` });
       }
     } catch (err: any) {
@@ -73,12 +77,12 @@ const UserManager: React.FC = () => {
 
       <div className="actions-wrapper">
         <div className="extra-buttons">
-            <button onClick={() => handleAction("disable")} disabled={loading}>Disable</button>
-            <button onClick={() => handleAction("enable")} disabled={loading}>Enable</button>
+            <button onClick={() => handleAction("unlock")} disabled={loading}>שחרר מנעילה</button>
+            <button onClick={() => handleAction("enable")} disabled={loading}>הפוך לפעיל</button>
         </div>
         <div className="extra-buttons">
-            <button onClick={() => handleAction("reset_password")} disabled={loading}>Reset Password</button>
-            <button onClick={() => handleAction("info")} disabled={loading}>User Info</button>
+            <button onClick={() => handleAction("reset_password")} disabled={loading}>איפוס סיסמא</button>
+            <button onClick={() => handleAction("info")} disabled={loading}>פרטי משתמש</button>
         </div>
 
       </div>

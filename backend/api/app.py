@@ -54,7 +54,7 @@ group_model = api.model("AddToGroup", {
 
 user_action_model = api.model("UserAction", {
     "username": fields.String(required=True, description="The domain username"),
-    "action": fields.String(required=True, description="Action to perform: unlock, reset_password, disable, enable, info")
+    "action": fields.String(required=True, description="Action to perform: unlock, reset_password, unlock, enable, info")
 })
 
 # --- Initialize Password and SSH Service ---
