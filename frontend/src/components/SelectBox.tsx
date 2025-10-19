@@ -30,8 +30,9 @@ export default function FancySelect({ id, label, value, options, onChange }: Fan
           onChange(selected ? selected.value : "");
         }}
         options={options}
-        placeholder="-- Select --"
+        placeholder="-- בחר --"
         classNamePrefix="select-box"
+        isClearable={false}
       />
     </div>
   );

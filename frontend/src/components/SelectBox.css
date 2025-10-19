@@ -4,6 +4,7 @@
   border: 1px solid #3a3a50;
   border-radius: 12px;
   min-height: 45px;
+  min-width: 400px;
   padding: 0 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.4);
   transition: all 0.2s ease-in-out;
@@ -26,28 +27,50 @@
   color: #e4e4e4;
 }
 
+
+
 /* Options */
 .select-box__option {
+  text-align: center;
   padding: 10px 12px;
   cursor: pointer;
+  background: transparent !important;
+  transition: background 0.2s ease;
+}
+
+.select-box__option:hover {
+  background: linear-gradient(145deg, #141629, #18447e) !important;
 }
 
 .select-box__option--is-focused {
-  background: #2a2a44;
+  background: #2a2a44 !important;
 }
 
 .select-box__option--is-selected {
-  background: linear-gradient(145deg, #141629, #18447e);
+  background: linear-gradient(145deg, #141629, #18447e) !important;
   color: white;
 }
 
 /* Placeholder text */
 .select-box__placeholder {
-  color: #e4e4e4;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  text-align: center;
 }
 
 /* Single value text */
 .select-box__single-value {
-  color: #e4e4e4;
+  color: #ffffff !important;
   font-weight: 500;
+  text-align: center;
+}
+
+/* Input text color (when typing/searching) */
+.select-box__input-container,
+.select-box__input {
+  color: #ffffff !important;
+}
+
+.select-box__input input {
+  color: #ffffff !important;
 }
