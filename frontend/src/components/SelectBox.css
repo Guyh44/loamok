@@ -16,6 +16,16 @@
   box-shadow: 0 0 6px #5c5c5c;
 }
 
+.select-box__control--is-focused {
+  border-color: #57e5f5 !important;
+  box-shadow: 0 0 10px rgba(87, 229, 245, 0.5) !important;
+}
+
+.select-box__control--menu-is-open {
+  border-color: #57e5f5 !important;
+  box-shadow: 0 0 10px rgba(87, 229, 245, 0.5) !important;
+}
+
 /* Dropdown menu */
 .select-box__menu {
   background: #1e1e2f !important;
@@ -49,6 +59,7 @@
 .select-box__option--is-selected {
   background: linear-gradient(145deg, #141629, #18447e) !important;
   color: white;
+  
 }
 
 /* Placeholder text */

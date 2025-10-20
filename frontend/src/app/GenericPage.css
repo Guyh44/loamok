@@ -40,6 +40,31 @@
   flex-shrink: 0;
 }
 
+/* Shared input styles */
+.config-row input,
+#generic-container input {
+  margin-left: 15px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  font-size: 1rem;
+  text-align: center;
+  background: rgba(156, 24, 24, 0.05);
+  color: #e8e9f3;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  width: 400px;
+  flex-shrink: 0;
+}
+
+.config-row input:focus,
+#generic-container input:focus {
+  outline: none !important;
+  border-color: #57e5f5 !important;
+  box-shadow: 0 0 10px rgba(87, 229, 245, 0.5) !important;
+  background: rgba(255, 255, 255, 0.08);
+}
+
 /* Shared select styles */
 .config-row select {
   margin-left: 15px;
@@ -58,8 +83,8 @@
 
 .config-row select:focus {
   outline: none;
-  border-color: #4facfe;
-  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+  border-color: #57e5f5;
+  box-shadow: 0 0 10px rgba(87, 229, 245, 0.5);
   background: rgba(255, 255, 255, 0.08);
 }
 
