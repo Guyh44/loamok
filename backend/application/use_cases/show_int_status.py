@@ -27,6 +27,12 @@ class GetIntStatusCase:
                 commands=commands
             )
         
+        # Clean command echoes from output
+        output = self._clean_command_echoes(output)
+        
+        # Filter out Te and Ap ports
+        output = self._filter_ports(output)
+        
         lines = output.splitlines()
         if not lines:
             return output
@@ -84,6 +90,54 @@ class GetIntStatusCase:
 
         cleaned = before + after
         return "\n".join(cleaned)
+    
+    def _clean_command_echoes(self, output: str) -> str:
+        """Remove command echo lines from the output"""
+        lines = output.splitlines()
+        cleaned_lines = []
+        started = False
+        
+        for line in lines:
+            # Skip lines that look like command prompts or echoes
+            if "#terminal length" in line or "#show int" in line or "#show interfaces" in line:
+                continue
+            # Skip lines that are just the hostname/prompt at the end
+            if line.strip().endswith("#") and len(line.strip()) < 20:
+                continue
+            
+            # Skip leading empty lines until we find content
+            if not started and not line.strip():
+                continue
+            
+            started = True
+            cleaned_lines.append(line)
+        
+        # Remove trailing empty lines
+        while cleaned_lines and not cleaned_lines[-1].strip():
+            cleaned_lines.pop()
+        
+        return "\n".join(cleaned_lines)
+    
+    def _filter_ports(self, output: str) -> str:
+        """Filter out Te (TenGigabit) and Ap (Application) ports from display"""
+        lines = output.splitlines()
+        filtered_lines = []
+        
+        for line in lines:
+            stripped = line.strip()
+            
+            # Keep header lines and empty lines
+            if not stripped or "Port" in line or "Interface" in line:
+                filtered_lines.append(line)
+                continue
+            
+            # Filter out lines starting with Te or Ap
+            if stripped.lower().startswith(("te", "ap")):
+                continue
+            
+            filtered_lines.append(line)
+        
+        return "\n".join(filtered_lines)
     
     def get_ports(self):
         # Try default command

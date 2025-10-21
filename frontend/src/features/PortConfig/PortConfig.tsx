@@ -8,6 +8,85 @@ import { getVlans } from "./getVlan";
 import type { VlanDropdownOption } from "./getVlan";
 import Spinner from "../../components/Spinner";
 import SelectBox from "../../components/SelectBox";
+import axios from "axios";
+import type React from "react";
+
+const API_BASE = "http://localhost:5000/";
+
+// Helper function to format interface status with color coding
+const formatInterfaceStatus = (rawStatus: string, selectedPort: string): React.JSX.Element => {
+  const lines = rawStatus.split('\n');
+  
+  return (
+    <>
+      {lines.map((line, index) => {
+        const trimmed = line.trim();
+        
+        // Skip empty lines completely (don't render them)
+        if (!trimmed) {
+          return null;
+        }
+        
+        // Detect header line - works for both "show int status" and "show interfaces description"
+        const isHeader = (trimmed.includes('Port') || trimmed.includes('Interface')) && 
+                        (trimmed.includes('Status') || trimmed.includes('Protocol'));
+        
+        if (isHeader) {
+          return (
+            <div key={index} className="interface-line header">
+              {line}
+            </div>
+          );
+        }
+        
+        // Parse port name (first word) - handles both Gi1/0/1 and Gi0/0/0 formats
+        const parts = trimmed.split(/\s+/);
+        const portName = parts[0];
+        
+        // Normalize both selected port and current port for comparison
+        const normalizePort = (port: string) => {
+          if (!port) return '';
+          // Remove spaces, slashes, commas, and any other non-alphanumeric characters except the port separator
+          return port.toLowerCase().replace(/[^a-z0-9]/g, '');
+        };
+        
+        const normalizedPort = normalizePort(portName);
+        const normalizedSelected = normalizePort(selectedPort);
+        const isSelected = selectedPort && normalizedPort === normalizedSelected;
+        
+        // Determine status class - check the second column (Status/Protocol column)
+        let statusClass = '';
+        
+        // For "show int status" format: status is in parts[1]
+        // For "show interfaces description" format: status is also in parts[1]
+        if (parts.length >= 2) {
+          const statusWord = parts[1].toLowerCase();
+          
+          if (statusWord === 'connected' || statusWord === 'up') {
+            statusClass = 'connected';
+          } else if (statusWord === 'notconnect' || statusWord === 'down') {
+            statusClass = 'notconnect';
+          } else if (statusWord === 'err-disabled') {
+            statusClass = 'err-disabled';
+          }
+        }
+        
+        // Combine classes
+        const className = `interface-line ${statusClass} ${isSelected ? 'selected' : ''}`.trim();
+        
+        return (
+          <div 
+            key={index} 
+            className={className}
+            id={isSelected ? 'selected-port-line' : undefined}
+          >
+            {line}
+          </div>
+        );
+      })}
+    </>
+  );
+};
 
 const PortConfig: React.FC = () => {
   const [selectedSwitch, setSelectedSwitch] = useState<string>("");
@@ -33,18 +112,8 @@ const PortConfig: React.FC = () => {
   const fetchInterfaceStatus = async (switchIp: string) => {
     setLoadingInterfaceStatus(true);
     try {
-      const response = await fetch(`http://localhost:5000/switch/int-status`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ip: switchIp }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Request failed: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setInterfaceStatus(data.interfaces || "No interface status available");
+      const response = await axios.post(`${API_BASE}switch/int-status`, { ip: switchIp });
+      setInterfaceStatus(response.data.interfaces || "No interface status available");
     } catch (error: any) {
       console.error("Failed to fetch interface status:", error);
       setInterfaceStatus(`Error: ${error.message}`);
@@ -57,18 +126,7 @@ const PortConfig: React.FC = () => {
     setLoadingShutCommand(true);
     try {
       const payload = { ip: selectedSwitch, port: selectedPort };
-
-      const res = await fetch(`http://localhost:5000/switch/${action}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        throw new Error(`Request failed: ${res.status}`);
-      }
-
-      await res.json();
+      await axios.post(`${API_BASE}switch/${action}`, payload);
       alert(`Success: ${action} on ${selectedPort}`);
 
       if (showInterfaceStatus && selectedSwitch) {
@@ -85,10 +143,10 @@ const PortConfig: React.FC = () => {
   const handleSubmit = async () => {
     setLoadingSendCommand(true);
     try {
-      await fetch("http://localhost:5000/switch/change-vlan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ switch: selectedSwitch, port: selectedPort, vlan: selectedVlan }),
+      await axios.post(`${API_BASE}switch/change-vlan`, {
+        switch: selectedSwitch,
+        port: selectedPort,
+        vlan: selectedVlan
       });
 
       if (showInterfaceStatus && selectedSwitch) {
@@ -104,6 +162,21 @@ const PortConfig: React.FC = () => {
       setLoadingSendCommand(false);
     }
   };
+
+  // Auto-scroll to selected port
+  useEffect(() => {
+    if (selectedPort && interfaceStatusRef.current) {
+      setTimeout(() => {
+        const selectedElement = document.getElementById('selected-port-line');
+        if (selectedElement && interfaceStatusRef.current) {
+          selectedElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+        }
+      }, 100);
+    }
+  }, [selectedPort, interfaceStatus]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -168,7 +241,7 @@ const PortConfig: React.FC = () => {
     };
 
     fetchData();
-  }, [selectedSwitch, showInterfaceStatus]);
+  }, [selectedSwitch]);
 
   return (
     <>
@@ -184,7 +257,9 @@ const PortConfig: React.FC = () => {
             )}
           </div>
           <div className="interface-status-content" ref={interfaceStatusRef}>
-            <pre>{interfaceStatus}</pre>
+            <pre>
+              {formatInterfaceStatus(interfaceStatus, selectedPort)}
+            </pre>
           </div>
         </div>
       </div>
