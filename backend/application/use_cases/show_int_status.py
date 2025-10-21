@@ -95,6 +95,7 @@ class GetIntStatusCase:
         """Remove command echo lines from the output"""
         lines = output.splitlines()
         cleaned_lines = []
+        started = False
         
         for line in lines:
             # Skip lines that look like command prompts or echoes
@@ -103,7 +104,17 @@ class GetIntStatusCase:
             # Skip lines that are just the hostname/prompt at the end
             if line.strip().endswith("#") and len(line.strip()) < 20:
                 continue
+            
+            # Skip leading empty lines until we find content
+            if not started and not line.strip():
+                continue
+            
+            started = True
             cleaned_lines.append(line)
+        
+        # Remove trailing empty lines
+        while cleaned_lines and not cleaned_lines[-1].strip():
+            cleaned_lines.pop()
         
         return "\n".join(cleaned_lines)
     

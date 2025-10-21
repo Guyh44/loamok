@@ -22,13 +22,13 @@ const formatInterfaceStatus = (rawStatus: string, selectedPort: string): React.J
       {lines.map((line, index) => {
         const trimmed = line.trim();
         
-        // Skip empty lines
+        // Skip empty lines completely (don't render them)
         if (!trimmed) {
-          return <div key={index}>&nbsp;</div>;
+          return null;
         }
         
-        // Detect header line
-        const isHeader = trimmed.includes('Port') && 
+        // Detect header line - works for both "show int status" and "show interfaces description"
+        const isHeader = (trimmed.includes('Port') || trimmed.includes('Interface')) && 
                         (trimmed.includes('Status') || trimmed.includes('Protocol'));
         
         if (isHeader) {
@@ -39,20 +39,36 @@ const formatInterfaceStatus = (rawStatus: string, selectedPort: string): React.J
           );
         }
         
-        // Parse port name (first word)
-        const portName = trimmed.split(/\s+/)[0];
-        const isSelected = selectedPort && portName.toLowerCase() === selectedPort.toLowerCase();
+        // Parse port name (first word) - handles both Gi1/0/1 and Gi0/0/0 formats
+        const parts = trimmed.split(/\s+/);
+        const portName = parts[0];
         
-        // Determine status class
+        // Normalize both selected port and current port for comparison
+        const normalizePort = (port: string) => {
+          if (!port) return '';
+          // Remove spaces, slashes, commas, and any other non-alphanumeric characters except the port separator
+          return port.toLowerCase().replace(/[^a-z0-9]/g, '');
+        };
+        
+        const normalizedPort = normalizePort(portName);
+        const normalizedSelected = normalizePort(selectedPort);
+        const isSelected = selectedPort && normalizedPort === normalizedSelected;
+        
+        // Determine status class - check the second column (Status/Protocol column)
         let statusClass = '';
-        const lowerLine = line.toLowerCase();
         
-        if (lowerLine.includes('connected') || lowerLine.includes('up')) {
-          statusClass = 'connected';
-        } else if (lowerLine.includes('notconnect') || lowerLine.includes('down')) {
-          statusClass = 'notconnect';
-        } else if (lowerLine.includes('err-disabled')) {
-          statusClass = 'err-disabled';
+        // For "show int status" format: status is in parts[1]
+        // For "show interfaces description" format: status is also in parts[1]
+        if (parts.length >= 2) {
+          const statusWord = parts[1].toLowerCase();
+          
+          if (statusWord === 'connected' || statusWord === 'up') {
+            statusClass = 'connected';
+          } else if (statusWord === 'notconnect' || statusWord === 'down') {
+            statusClass = 'notconnect';
+          } else if (statusWord === 'err-disabled') {
+            statusClass = 'err-disabled';
+          }
         }
         
         // Combine classes
