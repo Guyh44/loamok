@@ -7,7 +7,7 @@
   padding: 28px 60px;
   border-radius: 20px;
   box-shadow: 0 15px 35px rgba(22, 33, 62, 0.4), 0 5px 15px rgba(0, 0, 0, 0.2);
-  max-width: 600px;
+  max-width: 750px;
   margin: 0 auto;
   direction: rtl;
   text-align: right;
@@ -40,6 +40,39 @@
   flex-shrink: 0;
 }
 
+/* Shared input styles */
+.config-row input,
+#generic-container input {
+  margin-left: 15px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  font-size: 1rem;
+  text-align: center;
+  background: linear-gradient(145deg, #1e1e2f, #23233a);
+  color: #e8e9f3;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  width: 400px;
+  flex-shrink: 0;
+  min-height: 30px;
+}
+
+.config-row input:hover,
+#generic-container input:hover {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 0 6px #5c5c5c;
+  transition: all 0.4s ease-in-out;
+}
+
+.config-row input:focus,
+#generic-container input:focus {
+  outline: none !important;
+  border-color: #57e5f5 !important;
+  box-shadow: 0 0 10px rgba(87, 229, 245, 0.5) !important;
+  background: rgba(255, 255, 255, 0.08);
+}
+
 /* Shared select styles */
 .config-row select {
   margin-left: 15px;
@@ -52,14 +85,14 @@
   color: #e8e9f3;
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
-  width: 300px;
+  width: 400px;
   flex-shrink: 0;
 }
 
 .config-row select:focus {
   outline: none;
-  border-color: #4facfe;
-  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+  border-color: #57e5f5;
+  box-shadow: 0 0 10px rgba(87, 229, 245, 0.5);
   background: rgba(255, 255, 255, 0.08);
 }
 

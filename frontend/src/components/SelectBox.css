@@ -1,0 +1,102 @@
+/* Main control box */
+.select-box__control {
+  background: linear-gradient(145deg, #1e1e2f, #23233a);
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 16px !important;
+  min-height: 45px;
+  min-width: 400px;
+  padding: 0 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.select-box__control:hover {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 0 6px #5c5c5c;
+  transition: all 0.4s ease-in-out;
+}
+
+.select-box__control--is-focused {
+  border-color: #57e5f5 !important;
+  box-shadow: 0 0 10px rgba(87, 229, 245, 0.5) !important;
+}
+
+.select-box__control--menu-is-open {
+  border-color: #57e5f5 !important;
+  box-shadow: 0 0 10px rgba(87, 229, 245, 0.5) !important;
+}
+
+/* Dropdown indicator (arrow) */
+.select-box__indicator-separator {
+  display: none;
+}
+
+.select-box__dropdown-indicator {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.select-box__dropdown-indicator:hover {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Dropdown menu */
+.select-box__menu {
+  background: #1e1e2f !important;
+  border-radius: 16px !important;
+  border: 1px solid #3a3a50;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  z-index: 999;
+  color: #e4e4e4;
+  margin-left: 15px;
+}
+
+
+
+/* Options */
+.select-box__option {
+  text-align: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  background: transparent !important;
+  transition: background 0.2s ease;
+}
+
+.select-box__option:hover {
+  background: linear-gradient(145deg, #141629, #18447e) !important;
+}
+
+.select-box__option--is-focused {
+  background: #2a2a44 !important;
+}
+
+.select-box__option--is-selected {
+  background: linear-gradient(145deg, #141629, #18447e) !important;
+  color: white;
+  
+}
+
+/* Placeholder text */
+.select-box__placeholder {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  text-align: center;
+}
+
+/* Single value text */
+.select-box__single-value {
+  color: #ffffff !important;
+  text-align: center;
+}
+
+/* Input text color (when typing/searching) */
+.select-box__input-container,
+.select-box__input {
+  color: #ffffff !important;
+}
+
+.select-box__input input {
+  color: #ffffff !important;
+}

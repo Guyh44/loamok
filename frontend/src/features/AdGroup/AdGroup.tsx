@@ -2,12 +2,20 @@ import React, { useState } from "react";
 import GenericPage from "../../app/GenericPage";
 import "../AdGroup/AdGroup.css";
 import { groups } from "../../data/ADgroup";
+import SelectBox from "../../components/SelectBox";
+
 
 const AddToADGroup: React.FC = () => {
   const [username, setUsername] = useState("");
   const [groupname, setGroupname] = useState("");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null);
+
+  // Format groups for SelectBox
+  const groupOptions = groups.map((g) => ({
+    value: g.group,
+    label: g.group,
+  }));
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -41,8 +49,9 @@ const AddToADGroup: React.FC = () => {
       <h3 className="page-header">הוספת משתמש לקבוצה ב-AD</h3>
 
       <div className="config-row">
-        <label>בחר משתמש:</label>
+        <label htmlFor="username-input">בחר משתמש:</label>
         <input
+          id="username-input"
           type="text"
           placeholder="Enter Username"
           value={username}
@@ -50,20 +59,13 @@ const AddToADGroup: React.FC = () => {
         />
       </div>
 
-      <div className="config-row">
-        <label>בחר קבוצה:</label>
-        <select
-          value={groupname}
-          onChange={(e) => setGroupname(e.target.value)}
-        >
-          <option value="">-- בחר קבוצה --</option>
-          {groups.map((g, idx) => (
-            <option key={idx} value={g.group}>
-              {g.group}
-            </option>
-          ))}
-        </select>
-      </div>
+      <SelectBox
+        id="group-select"
+        label="בחר קבוצה:"
+        value={groupname}
+        options={groupOptions}
+        onChange={(value) => setGroupname(value)}
+      />
 
       <div className="actions-wrapper">
         <div className="send-button-wrapper">
