@@ -15,6 +15,7 @@
 .select-box__control:hover {
   border-color: rgba(255, 255, 255, 0.3) !important;
   box-shadow: 0 0 6px #5c5c5c;
+  transition: all 0.4s ease-in-out;
 }
 
 .select-box__control--is-focused {

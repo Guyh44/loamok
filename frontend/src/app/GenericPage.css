@@ -49,12 +49,20 @@
   border: 2px solid rgba(255, 255, 255, 0.1);
   font-size: 1rem;
   text-align: center;
-  background: rgba(156, 24, 24, 0.05);
+  background: linear-gradient(145deg, #1e1e2f, #23233a);
   color: #e8e9f3;
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
   width: 400px;
   flex-shrink: 0;
+  min-height: 30px;
+}
+
+.config-row input:hover,
+#generic-container input:hover {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 0 6px #5c5c5c;
+  transition: all 0.4s ease-in-out;
 }
 
 .config-row input:focus,

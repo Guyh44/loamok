@@ -16,7 +16,7 @@ class SSHService:
 
             for command in commands:
                 shell.send(command + '\n')
-                time.sleep(0.6)
+                time.sleep(0.25)
                 output += shell.recv(65535).decode()
 
             client.close()
