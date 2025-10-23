@@ -179,6 +179,17 @@
   transition: transform 0.6s ease-in-out;
 }
 
+/* Header expansion animation */
+header.expand-header {
+  transform: scaleX(1.4);
+  transform-origin: center;
+  transition: transform 0.6s ease-in-out;
+}
+
+header {
+  transition: transform 0.6s ease-in-out;
+}
+
 /* Spinner positioning for config rows */
 .config-row-with-spinner {
   position: relative;
@@ -259,5 +270,8 @@
   }
   #generic-container.slide-right-container {
     transform: translateX(0);
+  }
+  header.expand-header {
+    transform: scaleX(1);
   }
 }

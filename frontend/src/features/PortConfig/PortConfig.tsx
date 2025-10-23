@@ -179,6 +179,25 @@ const PortConfig: React.FC = () => {
   }, [selectedPort, interfaceStatus]);
 
   useEffect(() => {
+    const header = document.querySelector('header');
+      if (header) {
+        if (showInterfaceStatus) {
+          header.classList.add('expand-header');
+        } else {
+          header.classList.remove('expand-header');
+        }
+      }
+      
+      // Cleanup on unmount
+      return () => {
+        const header = document.querySelector('header');
+        if (header) {
+          header.classList.remove('expand-header');
+        }
+      };
+    }, [showInterfaceStatus]);
+
+  useEffect(() => {
     const fetchData = async () => {
       if (!selectedSwitch) {
         setPorts([]);
