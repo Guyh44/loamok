@@ -222,9 +222,9 @@ class GetIntStatusCase:
 
         # Filter out ap/te ports
         if description:
-            filtered_ports = [p for p in ports if not p[0].lower().startswith(("ap", "te"))]
+            filtered_ports = [p for p in ports if not p[0].lower().startswith(("ap", "te", "bd"))]
         else:
-            filtered_ports = [p for p in ports if not p.lower().startswith(("ap", "te"))]
+            filtered_ports = [p for p in ports if not p.lower().startswith(("ap", "te", "bd"))]
 
         return filtered_ports
 
