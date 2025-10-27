@@ -197,8 +197,8 @@ header {
 
 .config-row-with-spinner .spinner-inline {
   position: absolute;
-  left: -50px;
-  top: 50%;
+  left: -35px;
+  top: 53%;
   transform: translateY(-50%);
   z-index: 10;
 }

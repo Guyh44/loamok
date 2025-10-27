@@ -6,7 +6,7 @@ type Props = {
     color?: string;
 }
 
-const spinner = ({isLoading = true, size = 30, color = '#555eb3ff'}: Props) => {
+const spinner = ({isLoading = true, size = 30, color = '#57e5f5'}: Props) => {
     if (!isLoading) return null;
   return (
     <ClipLoader
