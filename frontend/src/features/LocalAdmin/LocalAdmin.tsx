@@ -33,7 +33,7 @@ const LocalAdmin: React.FC = () => {
             };
 
             console.log("Sending:", payload);
-
+            
             const res = await fetch("http://localhost:5000/user/add-local-admin", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

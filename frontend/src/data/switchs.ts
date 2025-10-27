@@ -4,9 +4,6 @@ export interface IPDropdownOption {
 }
 
 export const switchOptions: IPDropdownOption[]= [
-  { ricuz: "aggr_mbdt-1", ip: "20.0.0.2" },
-  { ricuz: "Aggr-Ashtrum", ip: "20.0.2.13" },
-  { ricuz: "aggr_mm-1", ip: "20.0.1.179" },
   { ricuz: "Ashtrum-CASA-B13-SW", ip: "20.0.3.13" },
   { ricuz: "B-4", ip: "20.0.0.4" },
   { ricuz: "B5", ip: "20.0.0.5" },
