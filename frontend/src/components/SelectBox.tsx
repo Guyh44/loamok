@@ -1,4 +1,3 @@
-import React from "react";
 import "../app/GenericPage.css"; // make sure this path matches where your GenericPage.css is
 import Select, { type SingleValue } from "react-select";
 import "../components/SelectBox.css"
