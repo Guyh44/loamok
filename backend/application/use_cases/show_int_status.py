@@ -19,6 +19,7 @@ class GetIntStatusCase:
         )
 
         # Detect invalid input (switch does not support this command)
+        uses_description = False
         if "% Invalid input" in output or "^" in output:
             commands = ["terminal length 0", "show interfaces description"]
             output = self.ssh.run_commands(
@@ -26,70 +27,75 @@ class GetIntStatusCase:
                 username=self.switch.username,
                 commands=commands
             )
+            uses_description = True
         
         # Clean command echoes from output
         output = self._clean_command_echoes(output)
         
-        # Filter out Te and Ap ports
-        output = self._filter_ports(output)
+        # Filter out unwanted interfaces
+        output = self._filter_unwanted_interfaces(output, uses_description)
         
-        lines = output.splitlines()
-        if not lines:
-            return output
+        # Only process "show int status" output for Name column removal
+        if not uses_description:
+            lines = output.splitlines()
+            if not lines:
+                return output
 
-        # Find the header line that contains the expected columns
-        header_idx = None
-        for i, line in enumerate(lines):
-            if ("Port" in line and "Status" in line and "Vlan" in line and "Duplex" in line and "Speed" in line):
-                header_idx = i
-                break
+            # Find the header line that contains the expected columns
+            header_idx = None
+            for i, line in enumerate(lines):
+                if ("Port" in line and "Status" in line and "Vlan" in line and "Duplex" in line and "Speed" in line):
+                    header_idx = i
+                    break
 
-        if header_idx is None:
-            # No recognizable header; return as-is
-            return output
+            if header_idx is None:
+                # No recognizable header; return as-is
+                return output
 
-        header = lines[header_idx]
+            header = lines[header_idx]
 
-        # Column starts based on non-space runs in the header
-        starts = [m.start() for m in re.finditer(r'\S+', header)]
-        titles = [header[s:e].strip() for s, e in zip(starts, starts[1:] + [len(header)])]
+            # Column starts based on non-space runs in the header
+            starts = [m.start() for m in re.finditer(r'\S+', header)]
+            titles = [header[s:e].strip() for s, e in zip(starts, starts[1:] + [len(header)])]
 
-        # Build (start, end) for each column; last column ends at None (EOL)
-        col_bounds = []
-        for idx, s in enumerate(starts):
-            e = starts[idx + 1] if idx + 1 < len(starts) else None  # None => to end-of-line
-            col_bounds.append((s, e))
+            # Build (start, end) for each column; last column ends at None (EOL)
+            col_bounds = []
+            for idx, s in enumerate(starts):
+                e = starts[idx + 1] if idx + 1 < len(starts) else None  # None => to end-of-line
+                col_bounds.append((s, e))
 
-        # Locate the "Name" column
-        try:
-            name_col_idx = [t.lower() for t in titles].index("name")
-        except ValueError:
-            # No Name column; nothing to remove
-            return output
+            # Locate the "Name" column
+            try:
+                name_col_idx = [t.lower() for t in titles].index("name")
+            except ValueError:
+                # No Name column; nothing to remove
+                return output
 
-        # Function to remove the slice of the Name column from a single line
-        def cut_name_column(line: str) -> str:
-            pieces = []
-            for idx, (s, e) in enumerate(col_bounds):
-                if idx == name_col_idx:
-                    continue  # skip Name
-                if e is None:
-                    pieces.append(line[s:])    # to end of line
-                else:
-                    # Guard for shorter lines
-                    if s >= len(line):
-                        segment = ""
+            # Function to remove the slice of the Name column from a single line
+            def cut_name_column(line: str) -> str:
+                pieces = []
+                for idx, (s, e) in enumerate(col_bounds):
+                    if idx == name_col_idx:
+                        continue  # skip Name
+                    if e is None:
+                        pieces.append(line[s:])    # to end of line
                     else:
-                        segment = line[s:e if e <= len(line) else len(line)]
-                    pieces.append(segment)
-            return "".join(pieces).rstrip()
+                        # Guard for shorter lines
+                        if s >= len(line):
+                            segment = ""
+                        else:
+                            segment = line[s:e if e <= len(line) else len(line)]
+                        pieces.append(segment)
+                return "".join(pieces).rstrip()
 
-        # Process header + all following data lines; keep any preamble above header untouched
-        before = lines[:header_idx]
-        after = [cut_name_column(l) for l in lines[header_idx:]]
+            # Process header + all following data lines; keep any preamble above header untouched
+            before = lines[:header_idx]
+            after = [cut_name_column(l) for l in lines[header_idx:]]
 
-        cleaned = before + after
-        return "\n".join(cleaned)
+            cleaned = before + after
+            return "\n".join(cleaned)
+        
+        return output
     
     def _clean_command_echoes(self, output: str) -> str:
         """Remove command echo lines from the output"""
@@ -118,24 +124,75 @@ class GetIntStatusCase:
         
         return "\n".join(cleaned_lines)
     
-    def _filter_ports(self, output: str) -> str:
-        """Filter out Te (TenGigabit) and Ap (Application) ports from display"""
+    def _filter_unwanted_interfaces(self, output: str, uses_description: bool = False) -> str:
+        """
+        Filter out unwanted interface lines:
+        - Te (TenGigabit) and Ap (Application) ports
+        - BD (Bridge Domain Interfaces)
+        - Gi0 (management interface, but keep Gi0/0/X and Gi1/0/X)
+        - Incomplete switch hostname lines
+        - If uses_description=True (FA switches), also filter out Gi ports (trunk ports)
+        """
         lines = output.splitlines()
         filtered_lines = []
+        
+        # Detect if this is an FA switch by checking for FA interfaces
+        is_fa_switch = any(line.strip().lower().startswith("fa") for line in lines)
         
         for line in lines:
             stripped = line.strip()
             
-            # Keep header lines and empty lines
-            if not stripped or "Port" in line or "Interface" in line:
+            # Keep empty lines temporarily (will remove trailing ones later)
+            if not stripped:
                 filtered_lines.append(line)
                 continue
             
-            # Filter out lines starting with Te or Ap
-            if stripped.lower().startswith(("te", "ap")):
+            # Keep header lines
+            if "Port" in line or "Interface" in line or "Status" in line:
+                filtered_lines.append(line)
                 continue
             
+            # Get the first word (interface name)
+            parts = stripped.split()
+            if not parts:
+                filtered_lines.append(line)
+                continue
+            
+            interface_name = parts[0].lower()
+            
+            # Filter out Te (TenGigabit) ports
+            if interface_name.startswith("te"):
+                continue
+            
+            # Filter out Ap (Application) ports
+            if interface_name.startswith("ap"):
+                continue
+            
+            # Filter out BD (Bridge Domain Interfaces)
+            if interface_name.startswith("bd"):
+                continue
+            
+            # Filter out Gi0 (management) but keep Gi0/0/X and Gi1/0/X
+            # Match exactly "gi0" followed by space or end of string, not "gi0/0/" or "gi1/0/"
+            if re.match(r'^gi0\s', interface_name) or interface_name == "gi0":
+                continue
+            
+            # Filter out Gi ports on FA switches (they are trunk ports)
+            if is_fa_switch and interface_name.startswith("gi"):
+                continue
+            
+            # Filter out incomplete switch hostname lines
+            # These typically have dashes but no spaces (like "Ashtrum-CASA-")
+            if "-" in stripped and len(parts) == 1:
+                # Single word with dash, likely incomplete hostname
+                continue
+            
+            # Keep everything else
             filtered_lines.append(line)
+        
+        # Remove trailing empty lines
+        while filtered_lines and not filtered_lines[-1].strip():
+            filtered_lines.pop()
         
         return "\n".join(filtered_lines)
     

@@ -5,13 +5,6 @@ import sys
 GROUPS = ["hz_users"]
 PASSWORD = "Aa123456"
 
-import subprocess
-import sys
-
-# Groups to add user to
-GROUPS = ["hz_users"]
-PASSWORD = "Aa123456"
-
 def CreateDomainUser(username: str):
     """
     Creates a domain user with a fixed password, forces password change at first logon,
